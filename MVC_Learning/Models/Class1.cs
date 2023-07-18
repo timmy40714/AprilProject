@@ -4,6 +4,10 @@ public class Class1
 {
 	public Class1()
 	{
-		public string hihi;
+		string aaa;
+
+		string vvv;
+
+		string ccc;
 	}
 }
