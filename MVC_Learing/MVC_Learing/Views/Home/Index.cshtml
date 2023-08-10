@@ -30,13 +30,15 @@
         integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link rel="stylesheet" href="~/css/bootstrap.min.css">
     <!-- Site CSS -->
-    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/style.css?v=210502">
     <!-- Responsive CSS -->
-    <link rel="stylesheet" href="~/css/responsive.css">
+    <link rel="stylesheet" href="~/css/responsive.css?v=210502">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="~/css/custom.css">
+    <link rel="stylesheet" href="~/css/custom.css?v=210502">
     <!--myCss-->
-    <link rel="stylesheet" href="~/css/myCss.css">
+    <link rel="stylesheet" href="~/css/myCss.css?v=210502">
+    <!--bootsnav-->
+    <link rel="stylesheet" href="~/css/bootsnav.css?v=210502">
 
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -116,7 +118,7 @@
                     </ul>
                 </div>
                 <!--會員登入互動視窗Start-->
-                <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1"
                     aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
@@ -148,7 +150,7 @@
                                             <label class="form-check-label" for="loginCheckDefault">記住我</label>
                                         </div>
                                     </div>
-                                    <div class="modal-footer" class="row gy-4"></div>
+                                 @*   <div class="modal-footer" class="row gy-4"></div>*@
                                     <div class="d-grid gap-2">
                                         <button class="btn btn-light" type="button">加入會員</button>
                                     </div>
@@ -158,6 +160,8 @@
                     </div>
                 </div>
                 <!--會員登入互動視窗End-->
+
+
                 <!-- End Atribute Navigation -->
             </div>
             <!-- Start Side Menu -->
@@ -232,7 +236,7 @@
                                 <tr>
                                     <td class="thumbnail-img">
                                         <a href="#">
-                                            <img class="img-fluid" src="image/CatCha/bananatree_JumpingPlatform.jpg"
+                                            <img class="img-fluid" src="images/CatCha/bananatree_JumpingPlatform.jpg"
                                                 alt="" />
                                         </a>
                                     </td>
@@ -258,7 +262,7 @@
                                 <tr>
                                     <td class="thumbnail-img">
                                         <a href="#">
-                                            <img class="img-fluid" src="~/image/CatCha/cactus_JumpingPlatform.jpg"
+                                            <img class="img-fluid" src="~/images/CatCha/cactus_JumpingPlatform.jpg"
                                                 alt="" />
                                         </a>
                                     </td>
@@ -354,7 +358,7 @@
         </div>
 
     </div>
-    </div>
+    
     <!-- End Cart -->
 
 
