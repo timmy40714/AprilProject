@@ -1,7 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using prjCatChaOnlineShop.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
+builder.Services.AddDbContext<¿ß§ì§ìContext>(
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("CatChaConnection"))
+    );
 
 var app = builder.Build();
 
