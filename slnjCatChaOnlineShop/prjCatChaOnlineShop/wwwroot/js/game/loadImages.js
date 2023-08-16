@@ -7,7 +7,8 @@ bagbk.src = '../../images/game/Inventory_Bar.png';
 bagItem1.src = '../../images/game/Inventory_select.png';
 helpBTNimg.src = '../../images/game/Icon_Question.png'; 
 rankBTNimg.src = '../../images/game/Icon_Stats.png';
-
+gotoGachaimg.src = '../../images/game/gachaIcon.png';
+gotoRunGameimg.src = '../../images/game/runGameIcon.png';
 
 //大廳背包格子
 bagItem1.src = '../../images/game/staticCats/kittenDefault_stopR.png'
@@ -74,6 +75,7 @@ floorR.src = '../../images/game/runGame/rungameFloor.jpg';
 floorR2.src = '../../images/game/runGame/rungameFloor.jpg';
 rungameBK.src = '../../images/game/runGame/rungameBK.png';
 pauseBTNimg.src = '../../images/game/runGame/pause.png';
+ScoreBK.src = '../../images/game/runGame/scoreBK.png'
 
 const RunCatData = {
     Default: {
