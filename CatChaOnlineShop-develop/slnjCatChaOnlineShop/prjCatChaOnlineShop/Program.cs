@@ -7,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+//註冊session要加這個
+builder.Services.AddSession();
+
 //讓網頁可以解析DB資料庫
 
 builder.Services.AddDbContext<cachaContext>(
@@ -25,7 +28,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
