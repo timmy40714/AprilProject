@@ -8,6 +8,11 @@ namespace prjCatChaOnlineShop.Controllers.Home
 {
     public class MemberLoginController : Controller
     {
+        public IActionResult Login()
+        {
+            return View();
+        }
+        [HttpPost]
         public IActionResult Login(CLoginModel vm)
         {
             //確定有抓到全部會員的資料，若資料表信箱或密碼其中有空值就會跳例外錯誤
@@ -17,9 +22,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 string Json = JsonSerializer.Serialize(user);
                 HttpContext.Session.SetString(CDictionary.SK_LOINGED_USER, Json);
-                return RedirectToAction("Index", "Index");
+                return RedirectToAction("Cart", "Cart");
             }
-            return View();
+            return Content("錯誤");
         }
 
         public IActionResult ForgetPassword()
