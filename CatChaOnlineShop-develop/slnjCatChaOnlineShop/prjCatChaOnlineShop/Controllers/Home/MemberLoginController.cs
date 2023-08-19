@@ -8,6 +8,14 @@ namespace prjCatChaOnlineShop.Controllers.Home
 {
     public class MemberLoginController : Controller
     {
+        //將 _context 注入控制器，可以在控制器的操作方法中使用 _context 來執行資料庫查詢和操作
+        private readonly cachaContext _context;
+        public MemberLoginController(cachaContext context)
+        {
+            _context = context;
+        }
+
+        //登入的方法
         public IActionResult Login()
         {
             return View();
@@ -22,7 +30,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 string Json = JsonSerializer.Serialize(user);
                 HttpContext.Session.SetString(CDictionary.SK_LOINGED_USER, Json);
-                return RedirectToAction("Cart", "Cart");
+                return RedirectToAction("Index", "Index");
             }
             return Content("錯誤");
         }
@@ -32,8 +40,15 @@ namespace prjCatChaOnlineShop.Controllers.Home
             return View();
         }
 
-        public IActionResult RegisterMember() 
+        public IActionResult RegisterMember()
         {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult RegisterMember(ShopMemberInfo registerModel) 
+        {
+            _context.ShopMemberInfo.Add(registerModel);
+            _context.SaveChanges();
             return View();
         }
     }
