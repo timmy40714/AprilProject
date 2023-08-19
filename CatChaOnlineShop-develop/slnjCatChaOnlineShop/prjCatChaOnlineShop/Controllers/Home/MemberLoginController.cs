@@ -45,11 +45,14 @@ namespace prjCatChaOnlineShop.Controllers.Home
             return View();
         }
         [HttpPost]
-        public IActionResult RegisterMember(ShopMemberInfo registerModel) 
+        public IActionResult RegisterMember(ShopMemberInfo registerModel)
         {
+
             _context.ShopMemberInfo.Add(registerModel);
             _context.SaveChanges();
-            return View();
+
+            return RedirectToAction("Login");
+
         }
     }
 }
