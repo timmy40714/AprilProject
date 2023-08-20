@@ -54,5 +54,13 @@ namespace prjCatChaOnlineShop.Controllers.Home
             return RedirectToAction("Login");
 
         }
+        //驗證信箱是否存在
+        [HttpPost]
+        public JsonResult CheckEmailExist(string email)
+        {
+            bool emailExist = _context.ShopMemberInfo.Any(x => x.Email == email);
+            return Json(emailExist);
+        }
+
     }
 }

@@ -367,5 +367,8 @@ background-color:#EDD8C0 ;
 
 /* 自訂錯誤訊息的文字顏色 */
 .error-message {
-    color: red !important; /* 或任何您想要的顏色 */
+    color: red !important; 
+    font-size: 15px;
+    font-family: 'Dosis', sans-serif;
+    line-height: 1.80857;
 }

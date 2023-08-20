@@ -77,8 +77,9 @@
                                     </div>
                                     <div class="mb-2 form-group">
                                         <label for="Email">電子信箱：</label>
-                                        <input type="email" class="form-control" name="Email"
+                                        <input type="email" class="form-control" name="Email" id="emailInput"
                                                placeholder="email" required>
+                                        <div id="emailError" class="invalid-feedback error-message">此信箱已被註冊過</div>
                                     </div>
                                     <div class="mb-2 form-group">
                                         <label for="PhoneNumber">手機號碼：</label>
@@ -222,32 +223,26 @@
     </script>
 
     <script type="text/javascript">
+        var emailAlreadyRegistered = false; // 添加變數以追蹤是否已經註冊
+
         $(document).ready(function () {
+            // 當輸入完電子信箱點選到其他地方(移開焦點)時執行信箱驗證
+            $("#emailInput").blur(function () {
+                var email = $(this).val();
+                validateEmail(email);
+            });
+
+            // 表單驗證
             $("#registerForm").validate({
-                errorClass:"error-message",
+                errorClass: "error-message",
                 submitHandler: function (form) {
-                    // 驗證成功之後就會進到這邊
-                    // 方法一：直接把表單 POST 或 GET 到你的 Action URL
-                    // 方法二：讀取某些欄位的資料，ajax 給別的 API。
-                    // 此處測試方法一的寫法如下：
-                    event.preventDefault(); // 防止預設行為的發生
-                    const formData = new FormData(form);
-                    fetch('@Url.Content("~/MemberLogin/RegisterMember")', {
-                        body: formData,
-                        method: 'POST'
-                    })
-                        .then(response => {
-                            if (response.ok) {
-                                alert("註冊會員成功");
-                                location.href = '@Url.Content("~/MemberLogin/Login")';
-                            } else {
-                                alert("註冊會員失敗");
-                            }
-                        });
+                    if (!emailAlreadyRegistered) { // 檢查是否已經註冊
+                        event.preventDefault(); // 防止預設行為的發生
+                        const formData = new FormData(form);
+                        registerMember(formData);
+                    }
                 },
                 errorPlacement: function (error, element) {
-                    // 可以自己決定錯誤訊息要放在什麼地方
-                    // 預設的是 element.after(error);
                     element.closest('.form-group').append(error);
                 },
                 rules: {
@@ -263,63 +258,48 @@
                 }
             });
         });
-    </script>
 
-
-    @*<!--驗證欄位-->
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#registerForm").validate({
-                submitHandler: function (form) {
-                    //驗證成功之後就會進到這邊：
-                    //方法一：直接把表單 POST 或 GET 到你的 Action URL
-                    //方法二：讀取某些欄位的資料，ajax 給別的 API。
-                    //此處測試方法一的寫法如下：
-                    form.submit();
-                },
-                errorPlacement: function (error, element) {
-                    //你可以自己決定錯誤訊息要放在什麼地方
-                    //預設的是 element.after(error);
-                    element.closest('.form-group').append(error);
-                },
-                rules: {
-                    //可以加上特殊的規則
-                    PasswordCheck: {
-                        equalTo: "#passwordInput"
-                    }
-                },
-                messages: {
-                    PasswordCheck: {
-                        equalTo: "密碼不相符，請再重新輸入一次"
+        // 驗證電子信箱是否存在的函數
+        function validateEmail(email) {
+            $.ajax({
+                url: '@Url.Content("~/MemberLogin/CheckEmailExist")',
+                method: 'POST',
+                data: { email: email },
+                success: function (response) {
+                    if (response) {
+                        $("#emailError").show();
+                        emailAlreadyRegistered = true; // 設定為已註冊
+                    } else {
+                        $("#emailError").hide();
+                        emailAlreadyRegistered = false; // 設定為未註冊
                     }
                 }
+            }).catch(function (error) {
+                console.error(error); // 處理Ajax錯誤
             });
-        });
+        }
 
-    </script>
-
-    <!--註冊會員-->
-    <script>
-        const btn = document.querySelector('#registerbutton');
-        btn.addEventListener('click', event => {
-            event.preventDefault(); //防止預設行為的發生
-
-            //改用 fetch 傳送FormData到server端，這是比較新的方式
-            const formData = new FormData(document.querySelector('#registerForm'));
+        // 註冊會員的函數
+        function registerMember(formData) {
             fetch('@Url.Content("~/MemberLogin/RegisterMember")', {
                 body: formData,
                 method: 'POST'
             })
                 .then(response => {
                     if (response.ok) {
-                        alert("註冊會員成功")
-                        location.href = '@Url.Content("~/MemberLogin/Login")'
+                        alert("註冊會員成功");
+                        location.href = '@Url.Content("~/MemberLogin/Login")';
+                    } else {
+                        alert("註冊會員失敗");
                     }
-                    else {
-                        alert("註冊會員失敗")
-                    }
-                })
-        })
-    </script>*@
+                }).catch(function (error) {
+                    console.error(error); // 處理Ajax錯誤
+                });
+        }
+
+    </script>
+
+
+    
 </body>
 </html>
