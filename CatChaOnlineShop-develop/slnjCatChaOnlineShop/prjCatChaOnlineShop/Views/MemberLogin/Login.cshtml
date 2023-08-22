@@ -6,6 +6,7 @@
 
 <html>
 <head>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
@@ -96,7 +97,20 @@
                                     <a>或用其他社群登入</a>
                                 </div>
                                 <div class="mt-3 text-center">
-                                    <a href="#" style="margin:15px">
+                                    <div id="g_id_onload"
+                                         data-client_id="572000494003-padpmen83rqinfo8tjq6d5tu653d69m2.apps.googleusercontent.com"
+                                         data-login_uri="https://localhost:7218/MemberLogin/ValidGoogleLogin"
+                                         data-auto_prompt="false">
+                                    </div>
+                                    <div class="g_id_signin"
+                                         data-type="standard"
+                                         data-size="large"
+                                         data-theme="outline"
+                                         data-text="sign_in_with"
+                                         data-shape="rectangular"
+                                         data-logo_alignment="left">
+                                    </div>
+                                   @* <a href="#" style="margin:15px">
                                         <span><img src="~/images/CatCha/facebook_icon.png"></span>
                                     </a>
                                     <a href="#" style="margin:15px">
@@ -104,7 +118,7 @@
                                     </a>
                                     <a href="#" style="margin:15px">
                                         <span> <img src="~/images/CatCha/twitter.png"></span>
-                                    </a>
+                                    </a>*@
                                 </div>
                             }
                         </div>
@@ -236,6 +250,8 @@
     <script src="~/js/form-validator.min.js"></script>
     <script src="~/js/contact-form-script.js"></script>
     <script src="~/js/custom.js"></script>
+    <!--Google登錄-->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <!--nav導覽與頁籤使用-->
     <script src="~/js/myScript.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
