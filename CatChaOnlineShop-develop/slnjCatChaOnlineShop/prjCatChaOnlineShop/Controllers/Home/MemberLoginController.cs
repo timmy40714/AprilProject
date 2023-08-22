@@ -186,8 +186,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
         /// <returns></returns>
         
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public IActionResult SendMailToken(SendMailTokenIn inModel)
+       // [ValidateAntiForgeryToken]
+        public IActionResult SendMailToken([FromBody] SendMailTokenIn inModel)
         {
             SendMailTokenOut outModel = new SendMailTokenOut();
 
