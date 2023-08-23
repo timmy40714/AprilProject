@@ -57,6 +57,8 @@ public partial class cachaContext : DbContext
 
     public virtual DbSet<GameShopArticleType> GameShopArticleType { get; set; }
 
+    public virtual DbSet<GameShopBanner> GameShopBanner { get; set; }
+
     public virtual DbSet<GameShopBlogData> GameShopBlogData { get; set; }
 
     public virtual DbSet<GameTaskConditionData> GameTaskConditionData { get; set; }
@@ -90,6 +92,10 @@ public partial class cachaContext : DbContext
     public virtual DbSet<ShopMemberInfo> ShopMemberInfo { get; set; }
 
     public virtual DbSet<ShopMyCatNameList> ShopMyCatNameList { get; set; }
+
+    public virtual DbSet<ShopNavbarChild> ShopNavbarChild { get; set; }
+
+    public virtual DbSet<ShopNavbarList> ShopNavbarList { get; set; }
 
     public virtual DbSet<ShopOrderDetailTable> ShopOrderDetailTable { get; set; }
 
@@ -125,7 +131,7 @@ public partial class cachaContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=msit150team02resouce.database.windows.net;Initial Catalog=catcha;Persist Security Info=True;User ID=msit150team02;Password=catcha!123");
+        => optionsBuilder.UseSqlServer("Data Source=msit150team02.database.windows.net;Initial Catalog=msit150team02resouce;Persist Security Info=True;User ID=msit150team02resoucegroup;Password=catcha!123");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -317,6 +323,7 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.PurchaseTime)
                 .HasMaxLength(50)
                 .HasColumnName("Purchase Time");
+            entity.Property(e => e.QuantityOfInGameItems).HasColumnName("Quantity Of In Game Items");
 
             entity.HasOne(d => d.Product).WithMany(p => p.GameItemPurchaseRecord)
                 .HasForeignKey(d => d.ProductId)
@@ -500,6 +507,17 @@ public partial class cachaContext : DbContext
             entity.ToTable("Game.shopArticleType");
 
             entity.Property(e => e.ArticleTypeId).HasColumnName("ArticleTypeID");
+        });
+
+        modelBuilder.Entity<GameShopBanner>(entity =>
+        {
+            entity.HasKey(e => e.BannerId);
+
+            entity.ToTable("Game.Shop.Banner");
+
+            entity.Property(e => e.BannerId).HasColumnName("BannerID");
+            entity.Property(e => e.Link).HasColumnName("link");
+            entity.Property(e => e.PublishDate).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<GameShopBlogData>(entity =>
@@ -721,7 +739,7 @@ public partial class cachaContext : DbContext
             entity.ToTable("Shop.Game Admin Data");
 
             entity.Property(e => e.AdminId).HasColumnName("Admin ID");
-            entity.Property(e => e.AdminAccount).HasMaxLength(50);
+            entity.Property(e => e.AdminAccount).HasColumnName("Admin Account");
             entity.Property(e => e.AdminPassword).HasColumnName("Admin Password");
             entity.Property(e => e.AdminUsername).HasColumnName("Admin Username");
         });
@@ -797,7 +815,6 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.MemberAccount)
                 .HasMaxLength(50)
                 .HasColumnName("Member Account");
-            entity.Property(e => e.MemberStatusId).HasColumnName("MemberStatusID");
             entity.Property(e => e.MyCatNameListId).HasColumnName("MyCatNameListID");
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.PhoneNumber)
@@ -829,6 +846,34 @@ public partial class cachaContext : DbContext
                 .HasForeignKey(d => d.MemberId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Shop.MyCatNameList_Shop.Member Info");
+        });
+
+        modelBuilder.Entity<ShopNavbarChild>(entity =>
+        {
+            entity.HasKey(e => e.NavbarChildId);
+
+            entity.ToTable("Shop.NavbarChild");
+
+            entity.Property(e => e.NavbarChildId)
+                .ValueGeneratedNever()
+                .HasColumnName("NavbarChildID");
+            entity.Property(e => e.NavText).HasMaxLength(50);
+            entity.Property(e => e.NavbarId).HasColumnName("NavbarID");
+
+            entity.HasOne(d => d.Navbar).WithMany(p => p.ShopNavbarChild)
+                .HasForeignKey(d => d.NavbarId)
+                .HasConstraintName("FK_Shop.NavbarChild_Shop.NavbarList");
+        });
+
+        modelBuilder.Entity<ShopNavbarList>(entity =>
+        {
+            entity.HasKey(e => e.NavbarId);
+
+            entity.ToTable("Shop.NavbarList");
+
+            entity.Property(e => e.NavbarId).HasColumnName("NavbarID");
+            entity.Property(e => e.NavbarText).HasMaxLength(50);
+            entity.Property(e => e.PublishTime).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<ShopOrderDetailTable>(entity =>
@@ -964,7 +1009,6 @@ public partial class cachaContext : DbContext
             entity.ToTable("Shop.Product Review Table");
 
             entity.Property(e => e.ProductReviewId).HasColumnName("Product Review ID");
-            entity.Property(e => e.HideReview).HasColumnName("hideReview");
             entity.Property(e => e.MemberId).HasColumnName("Member ID");
             entity.Property(e => e.ProductId).HasColumnName("Product ID");
             entity.Property(e => e.ProductRating).HasColumnName("Product Rating");

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Models;
-
+using prjCatChaOnlineShop.Models.CModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +9,12 @@ builder.Services.AddControllersWithViews();
 
 //註冊session要加這個
 builder.Services.AddSession();
+
+//訪問當前 HTTP 要求的相關資訊，例如 HTTP 上下文、Session、Cookies
+builder.Services.AddHttpContextAccessor();
+
+// 註冊 CheckoutService 服務
+builder.Services.AddScoped<CheckoutService>();
 
 //讓網頁可以解析DB資料庫
 
