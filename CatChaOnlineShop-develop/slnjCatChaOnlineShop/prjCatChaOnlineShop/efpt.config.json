@@ -196,10 +196,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Shop.Product Discount]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Shop.Product Image Table]",
          "ObjectType": 0
       },
@@ -240,7 +236,7 @@
          "ObjectType": 0
       }
    ],
-   "UiHint": "msit150team02.msit150team02resouce.dbo",
+   "UiHint": "msit150team02resoucegroup.msit150team02resoucegroup.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,

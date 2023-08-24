@@ -12,6 +12,7 @@ using static prjCatChaOnlineShop.Models.ViewModels.CForgetPwdModel;
 using System.Configuration;
 using System.Data;
 using Google.Apis.Auth;
+using System.IO;
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
@@ -26,6 +27,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             _configuration = configuration;
         }
 
+        #region 登入
         //登入的方法
         public IActionResult Login()
         {
@@ -45,12 +47,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
             return Content("錯誤");
         }
+        #endregion
 
-        public IActionResult ForgetPassword()
-        {
-            return View();
-        }
 
+        #region 註冊會員
         public IActionResult RegisterMember()
         {
             return View();
@@ -72,18 +72,35 @@ namespace prjCatChaOnlineShop.Controllers.Home
             bool emailExist = _context.ShopMemberInfo.Any(x => x.Email == email);
             return Json(emailExist);
         }
+        #endregion
 
+        
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
         //重設密碼
         public IActionResult ResetPassword(string verify)
         {
+            //取得從SendMailToken儲存的使用者帳號
+            string memberEmail = HttpContext.Session.GetString("ResetPwdUserEmail");
+
+            //if (string.IsNullOrEmpty(memberEmail))
+            //{
+            //    ViewData["ErrorMsg"] = "請重新提交驗證碼";
+            //    return View();
+            //}
+            return View();
+
+
             if (string.IsNullOrEmpty(verify))
             {
                 ViewData["ErrorMsg"] = "缺少驗證碼";
                 return View();
             }
 
-            // 取得系統自定密鑰，這裡使用 IConfiguration 讀取
-            string secretKey = _configuration["SecretKey"];
+            // 取得系統自定密鑰，這裡使用 IConfiguration 讀取 
+            string secretKey = _configuration["ForgetPassword:SecretKey"];
 
             try
             {
@@ -180,13 +197,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
 
 
-        /// <summary>
-        /// 寄送驗證碼
-        /// </summary>
-        /// <returns></returns>
-        
+        //輸入電子信箱後按下寄送認證碼執行的方法
         [HttpPost]
-       // [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public IActionResult SendMailToken([FromBody] SendMailTokenIn inModel)
         {
             SendMailTokenOut outModel = new SendMailTokenOut();
@@ -198,86 +211,98 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 return Json(outModel);
             }
 
-            // 檢查資料庫是否有這個帳號
-            string connStr = _configuration.GetConnectionString("DefaultConnection");
+            //把使用者帳號寫進session
+            HttpContext.Session.SetString("ResetPwdUserEmail", inModel.MemberID);
 
-            using (SqlConnection conn = new SqlConnection(connStr))
+            // 使用 LINQ 查詢資料庫以獲取會員資料
+            var member = _context.ShopMemberInfo
+                .Where(m => m.Email == inModel.MemberID)
+                .FirstOrDefault();
+
+            if (member != null)
             {
-                conn.Open();
+                string UserEmail = member.Email;
 
-                // 取得會員資料
-                string sql = "SELECT * FROM Member WHERE UserID = @UserID";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@UserID", inModel.MemberID);
+                // 產生帳號+時間驗證碼
+                string sVerify = inModel.MemberID + "|" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
 
-                using (SqlDataAdapter adpt = new SqlDataAdapter(cmd))
+                // 使用AES加密
+                string encryptedVerify = EncryptString(sVerify, _configuration["ForgetPassword:SecretKey"]);
+
+                // 網站網址
+                string webPath = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}";
+
+                // 從信件連結回到重設密碼頁面
+                string receivePage = "MemberLogin/ResetPassword";
+
+                // 信件內容範本
+                string mailContent = "請點擊以下連結，返回網站重新設定密碼，逾期 30 分鐘後，此連結將會失效。<br><br>";
+                mailContent = mailContent + $"<a href='{webPath}/{receivePage}?verify={encryptedVerify}' target='_blank'>點此連結</a>";
+
+                // 信件主題
+                string mailSubject = "[測試] 重設密碼申請信";
+
+                // Google 發信帳號密碼
+                string GoogleMailUserID = _configuration["ForgetPassword:GoogleMailUserID"];
+                string GoogleMailUserPwd = _configuration["ForgetPassword:GoogleMailUserPwd"];
+
+                // 使用 Google Mail Server 發信
+                string SmtpServer = "smtp.gmail.com";
+                int SmtpPort = 587;
+                MailMessage mms = new MailMessage();
+                mms.From = new MailAddress(GoogleMailUserID);
+                mms.Subject = mailSubject;
+                mms.Body = mailContent;
+                mms.IsBodyHtml = true;
+                mms.SubjectEncoding = Encoding.UTF8;
+                mms.To.Add(new MailAddress(UserEmail));
+
+                using (SmtpClient client = new SmtpClient(SmtpServer, SmtpPort))
                 {
-                    DataTable dt = new DataTable();
-                    adpt.Fill(dt);
-
-                    if (dt.Rows.Count > 0)
-                    {
-                        string UserEmail = dt.Rows[0]["UserEmail"].ToString();
-
-                        // 產生帳號+時間驗證碼
-                        string sVerify = inModel.MemberID + "|" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-
-                        // 網站網址
-                        string webPath = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}";
-
-                        // 從信件連結回到重設密碼頁面
-                        string receivePage = "Member/ResetPwd";
-
-                        // 信件內容
-                        string mailContent = $"請點擊以下連結，返回網站重新設定密碼，逾期 30 分鐘後，此連結將會失效。<br><br><a href='{webPath}/{receivePage}?verify={sVerify}' target='_blank'>點此連結</a>";
-
-                        // 信件主題
-                        string mailSubject = "[測試] 重設密碼申請信";
-
-                        // Google 發信帳號密碼
-                        string GoogleMailUserID = _configuration["GoogleMailUserID"];
-                        string GoogleMailUserPwd = _configuration["GoogleMailUserPwd"];
-
-                        // 使用 Google Mail Server 發信
-                        string SmtpServer = "smtp.gmail.com";
-                        int SmtpPort = 587;
-                        MailMessage mms = new MailMessage();
-                        mms.From = new MailAddress(GoogleMailUserID);
-                        mms.Subject = mailSubject;
-                        mms.Body = mailContent;
-                        mms.IsBodyHtml = true;
-                        mms.SubjectEncoding = Encoding.UTF8;
-                        mms.To.Add(new MailAddress(UserEmail));
-
-                        using (SmtpClient client = new SmtpClient(SmtpServer, SmtpPort))
-                        {
-                            client.EnableSsl = true;
-                            client.Credentials = new NetworkCredential(GoogleMailUserID, GoogleMailUserPwd);
-
-                            client.Send(mms);
-                        }
-
-                        outModel.ResultMsg = "請於 30 分鐘內至你的信箱點擊連結重新設定密碼，逾期將無效";
-                    }
-                    else
-                    {
-                        outModel.ErrMsg = "查無此帳號";
-                    }
+                    client.EnableSsl = true;
+                    client.Credentials = new NetworkCredential(GoogleMailUserID, GoogleMailUserPwd);
+                    client.Send(mms); //寄出信件
                 }
+
+                outModel.ResultMsg = "請於 30 分鐘內至你的信箱點擊連結重新設定密碼，逾期將無效";
+            }
+            else
+            {
+                outModel.ErrMsg = "查無此帳號";
             }
 
             return Json(outModel);
         }
 
+        // AES加密方法:產生隨機金鑰
+        private string EncryptString(string plainText, string key)
+        {
+            using (Aes aesAlg = Aes.Create())
+            {
+                aesAlg.Key = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(key));
+                aesAlg.IV = new byte[16]; // 使用零IV，因為不需要解密
 
+                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
-        /// <summary>
-        /// 重設密碼
-        /// </summary>
-        /// <param name="inModel"></param>
-        /// <returns></returns>
-        [ValidateAntiForgeryToken]
-        public ActionResult DoResetPwd(DoResetPwdIn inModel)
+                using (MemoryStream msEncrypt = new MemoryStream())
+                {
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        {
+                            swEncrypt.Write(plainText);
+                        }
+                    }
+                    return Convert.ToBase64String(msEncrypt.ToArray());
+                }
+            }
+        }
+
+        //
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public ActionResult DoResetPwd([FromBody] DoResetPwdIn inModel)
         {
             DoResetPwdOut outModel = new DoResetPwdOut();
 
@@ -306,12 +331,11 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 return Json(outModel);
             }
 
-            // 將新密碼使用 SHA256 雜湊運算(不可逆)
-            string salt = resetPwdUserId.Substring(0, 1).ToLower(); // 使用帳號前一碼當作密碼鹽
-            SHA256 sha256 = SHA256.Create();
-            byte[] bytes = Encoding.UTF8.GetBytes(salt + inModel.NewUserPwd); // 將密碼鹽及新密碼組合
-            byte[] hash = sha256.ComputeHash(bytes);
-            string NewPwd = BitConverter.ToString(hash).Replace("-", "").ToLower(); // 雜湊運算後密碼
+            //取得目前使用者輸入的新密碼
+            string NewPwd = inModel.NewUserPwd;
+
+            //使用cachaContext更新到資料庫
+
 
             // 取得連線字串
             string connStr = _configuration.GetConnectionString("CachaConnection");

@@ -31,11 +31,9 @@ public partial class ShopProductTotal
 
     public DateTime? OffDay { get; set; }
 
-    public int? DiscountId { get; set; }
-
     public string Attributes { get; set; }
 
-    public virtual ShopProductDiscount Discount { get; set; }
+    public decimal? Discount { get; set; }
 
     public virtual ShopProductCategory ProductCategory { get; set; }
 

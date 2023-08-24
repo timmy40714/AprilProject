@@ -107,8 +107,6 @@ public partial class cachaContext : DbContext
 
     public virtual DbSet<ShopProductCategory> ShopProductCategory { get; set; }
 
-    public virtual DbSet<ShopProductDiscount> ShopProductDiscount { get; set; }
-
     public virtual DbSet<ShopProductImageTable> ShopProductImageTable { get; set; }
 
     public virtual DbSet<ShopProductReviewTable> ShopProductReviewTable { get; set; }
@@ -131,7 +129,7 @@ public partial class cachaContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=msit150team02.database.windows.net;Initial Catalog=msit150team02resouce;Persist Security Info=True;User ID=msit150team02resoucegroup;Password=catcha!123");
+        => optionsBuilder.UseSqlServer("Data Source=msit150team02resoucegroup.database.windows.net;Initial Catalog=msit150team02resoucegroup;Persist Security Info=True;User ID=msit150team02resoucegroup;Password=catcha!123");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -489,7 +487,6 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.AnnouncementTypeId).HasColumnName("AnnouncementType ID");
             entity.Property(e => e.EditTime).HasColumnType("datetime");
             entity.Property(e => e.HideInGameDisplay).HasColumnName("HideIn-gameDisplay");
-            entity.Property(e => e.PublishTime).HasColumnType("datetime");
 
             entity.HasOne(d => d.Admin).WithMany(p => p.GameShopAnnouncement)
                 .HasForeignKey(d => d.AdminId)
@@ -739,7 +736,6 @@ public partial class cachaContext : DbContext
             entity.ToTable("Shop.Game Admin Data");
 
             entity.Property(e => e.AdminId).HasColumnName("Admin ID");
-            entity.Property(e => e.AdminAccount).HasColumnName("Admin Account");
             entity.Property(e => e.AdminPassword).HasColumnName("Admin Password");
             entity.Property(e => e.AdminUsername).HasColumnName("Admin Username");
         });
@@ -975,18 +971,6 @@ public partial class cachaContext : DbContext
                 .HasColumnName("Category Name");
         });
 
-        modelBuilder.Entity<ShopProductDiscount>(entity =>
-        {
-            entity.HasKey(e => e.DiscountId);
-
-            entity.ToTable("Shop.Product Discount");
-
-            entity.Property(e => e.DiscountId).HasColumnName("Discount ID");
-            entity.Property(e => e.DiscountValue)
-                .HasColumnType("decimal(18, 0)")
-                .HasColumnName("Discount Value");
-        });
-
         modelBuilder.Entity<ShopProductImageTable>(entity =>
         {
             entity.HasKey(e => e.ProductImageId).HasName("PK_Shop.商品圖片表");
@@ -1050,7 +1034,7 @@ public partial class cachaContext : DbContext
 
             entity.Property(e => e.ProductId).HasColumnName("Product ID");
             entity.Property(e => e.Attributes).HasMaxLength(50);
-            entity.Property(e => e.DiscountId).HasColumnName("Discount ID");
+            entity.Property(e => e.Discount).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.OffDay)
                 .HasColumnType("datetime")
                 .HasColumnName("offDay");
@@ -1069,10 +1053,6 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.Size).HasMaxLength(50);
             entity.Property(e => e.SupplierId).HasColumnName("Supplier ID");
             entity.Property(e => e.Weight).HasMaxLength(50);
-
-            entity.HasOne(d => d.Discount).WithMany(p => p.ShopProductTotal)
-                .HasForeignKey(d => d.DiscountId)
-                .HasConstraintName("FK_Shop.Product Total_Shop.Product Discount");
 
             entity.HasOne(d => d.ProductCategory).WithMany(p => p.ShopProductTotal)
                 .HasForeignKey(d => d.ProductCategoryId)
