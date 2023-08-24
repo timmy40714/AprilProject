@@ -1,13 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CModels;
+//建立金鑰要使用的
+using System;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using prjCatChaOnlineShop.Models.ViewModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-//註冊session要加這個
+//註冊session
 builder.Services.AddSession();
 
 //訪問當前 HTTP 要求的相關資訊，例如 HTTP 上下文、Session、Cookies
@@ -20,6 +25,13 @@ builder.Services.AddScoped<CheckoutService>();
 
 builder.Services.AddDbContext<cachaContext>(
  options => options.UseSqlServer(builder.Configuration.GetConnectionString("CachaConnection")));
+
+// 生成一個新的隨機金鑰
+string randomKey = CKeyGenerator.GenerateRandomKey();
+
+// 將隨機金鑰設置到 IConfiguration 裡
+builder.Configuration["ForgetPassword:SecretKey"] = randomKey;
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

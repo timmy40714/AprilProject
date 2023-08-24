@@ -27,6 +27,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             _configuration = configuration;
         }
 
+
         #region 登入
         //登入的方法
         public IActionResult Login()
@@ -82,17 +83,17 @@ namespace prjCatChaOnlineShop.Controllers.Home
         //重設密碼
         public IActionResult ResetPassword(string verify)
         {
-            //取得從SendMailToken儲存的使用者帳號
-            string memberEmail = HttpContext.Session.GetString("ResetPwdUserEmail");
+            //////取得從SendMailToken儲存的使用者帳號
+            //string memberEmail = HttpContext.Session.GetString("ResetPwdUserEmail");
 
-            //if (string.IsNullOrEmpty(memberEmail))
-            //{
-            //    ViewData["ErrorMsg"] = "請重新提交驗證碼";
-            //    return View();
-            //}
-            return View();
-
-
+            ////if (string.IsNullOrEmpty(memberEmail))
+            ////{
+            ////    ViewData["ErrorMsg"] = "請重新提交驗證碼";
+            ////    return View();
+            ////}
+            //return View();
+            #region----
+            verify = verify.Replace(" ", "+");
             if (string.IsNullOrEmpty(verify))
             {
                 ViewData["ErrorMsg"] = "缺少驗證碼";
@@ -150,15 +151,17 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 ViewData["ErrorMsg"] = "處理驗證碼時出錯";
                 return View();
             }
+            #endregion
         }
 
+        //AES解密
         private string DecryptString(string cipherText, string key)
         {
+            //cipherText.Replace(" ", "+");
             using (Aes aesAlg = Aes.Create())
             {
                 aesAlg.Key = Encoding.UTF8.GetBytes(key);
-                aesAlg.Mode = CipherMode.ECB;
-                aesAlg.Padding = PaddingMode.PKCS7;
+                aesAlg.IV = new byte[16]; // 使用零IV，因為不需要解密
 
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
 
@@ -173,6 +176,26 @@ namespace prjCatChaOnlineShop.Controllers.Home
                     }
                 }
             }
+
+            //using (Aes aesAlg = Aes.Create())
+            //{
+            //    aesAlg.Key = Encoding.UTF8.GetBytes(key);
+            //    aesAlg.Mode = CipherMode.ECB;
+            //    aesAlg.Padding = PaddingMode.PKCS7;
+
+            //    ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+            //    using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(cipherText)))
+            //    {
+            //        using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+            //        {
+            //            using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+            //            {
+            //                return srDecrypt.ReadToEnd();
+            //            }
+            //        }
+            //    }
+            //}
 
             //// 使用 Google Mail Server 發信
             //string GoogleID = "smilehsiang@gmail.com"; //Google 發信帳號
@@ -211,9 +234,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 return Json(outModel);
             }
 
-            //把使用者帳號寫進session
-            HttpContext.Session.SetString("ResetPwdUserEmail", inModel.MemberID);
-
             // 使用 LINQ 查詢資料庫以獲取會員資料
             var member = _context.ShopMemberInfo
                 .Where(m => m.Email == inModel.MemberID)
@@ -221,6 +241,15 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
             if (member != null)
             {
+                // 生成一個新的隨機金鑰
+                string randomKey = CKeyGenerator.GenerateRandomKey();
+                // 將隨機金鑰設置到 IConfiguration 裡
+                _configuration["ForgetPassword:SecretKey"] = randomKey;
+
+                //把使用者帳號寫進session
+                HttpContext.Session.SetString("ResetPwdUserEmail", inModel.MemberID);
+                string storedValue = HttpContext.Session.GetString("ResetPwdUserEmail");
+
                 string UserEmail = member.Email;
 
                 // 產生帳號+時間驗證碼
@@ -279,7 +308,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             using (Aes aesAlg = Aes.Create())
             {
-                aesAlg.Key = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(key));
+                aesAlg.Key = Encoding.UTF8.GetBytes(key);
                 aesAlg.IV = new byte[16]; // 使用零IV，因為不需要解密
 
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
@@ -335,42 +364,20 @@ namespace prjCatChaOnlineShop.Controllers.Home
             string NewPwd = inModel.NewUserPwd;
 
             //使用cachaContext更新到資料庫
+            var resetMember=_context.ShopMemberInfo.FirstOrDefault(m=>m.Email==resetPwdUserId);
 
-
-            // 取得連線字串
-            string connStr = _configuration.GetConnectionString("CachaConnection");
-
-            // 當程式碼離開 using 區塊時，會自動關閉連接
-            using (SqlConnection conn = new SqlConnection(connStr))
+            if (resetMember != null)
             {
-                // 資料庫連線
-                conn.Open();
-
-                // 修改個人資料至資料庫
-                string sql = @"UPDATE Shop.MemberInfo SET Password = @UserPwd WHERE MemberID = @UserID";
-                SqlCommand cmd = new SqlCommand();
-                cmd.Connection = conn;
-                cmd.CommandText = sql;
-
-                // 使用參數化填值
-                cmd.Parameters.AddWithValue("@UserID", resetPwdUserId);
-                cmd.Parameters.AddWithValue("@UserPwd", NewPwd);
-
-                // 執行資料庫更新動作
-                int Ret = cmd.ExecuteNonQuery();
-
-                if (Ret > 0)
-                {
-                    outModel.ResultMsg = "重設密碼完成";
-                }
-                else
-                {
-                    outModel.ErrMsg = "無異動資料";
-                }
+                resetMember.Password = inModel.NewUserPwd;
+                _context.Update(resetMember);
+                _context.SaveChanges();
+                return RedirectToAction("Login");
             }
-
-            // 回傳 Json 給前端
-            return Json(outModel);
+            else
+            {
+                ViewData["ErrorMsg"] = "找不到該會員";
+                return View();
+            }
         }
 
         public IActionResult ValidGoogleLogin()
