@@ -46,10 +46,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 HttpContext.Session.SetString(CDictionary.SK_LOINGED_USER, Json);
                 return RedirectToAction("Index", "Index");
             }
-            return Content("錯誤");
+            return View();
         }
         #endregion
-
 
         #region 註冊會員
         public IActionResult RegisterMember()
@@ -75,24 +74,14 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
         #endregion
 
-        
+        #region 忘記密碼
         public IActionResult ForgetPassword()
         {
             return View();
         }
         //重設密碼
         public IActionResult ResetPassword(string verify)
-        {
-            //////取得從SendMailToken儲存的使用者帳號
-            //string memberEmail = HttpContext.Session.GetString("ResetPwdUserEmail");
-
-            ////if (string.IsNullOrEmpty(memberEmail))
-            ////{
-            ////    ViewData["ErrorMsg"] = "請重新提交驗證碼";
-            ////    return View();
-            ////}
-            //return View();
-            #region----
+        {  
             verify = verify.Replace(" ", "+");
             if (string.IsNullOrEmpty(verify))
             {
@@ -151,74 +140,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 ViewData["ErrorMsg"] = "處理驗證碼時出錯";
                 return View();
             }
-            #endregion
         }
-
-        //AES解密
-        private string DecryptString(string cipherText, string key)
-        {
-            //cipherText.Replace(" ", "+");
-            using (Aes aesAlg = Aes.Create())
-            {
-                aesAlg.Key = Encoding.UTF8.GetBytes(key);
-                aesAlg.IV = new byte[16]; // 使用零IV，因為不需要解密
-
-                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-
-                using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(cipherText)))
-                {
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-                    {
-                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
-                        {
-                            return srDecrypt.ReadToEnd();
-                        }
-                    }
-                }
-            }
-
-            //using (Aes aesAlg = Aes.Create())
-            //{
-            //    aesAlg.Key = Encoding.UTF8.GetBytes(key);
-            //    aesAlg.Mode = CipherMode.ECB;
-            //    aesAlg.Padding = PaddingMode.PKCS7;
-
-            //    ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-
-            //    using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(cipherText)))
-            //    {
-            //        using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-            //        {
-            //            using (StreamReader srDecrypt = new StreamReader(csDecrypt))
-            //            {
-            //                return srDecrypt.ReadToEnd();
-            //            }
-            //        }
-            //    }
-            //}
-
-            //// 使用 Google Mail Server 發信
-            //string GoogleID = "smilehsiang@gmail.com"; //Google 發信帳號
-            //string TempPwd = "wafdnrkmgrjagvvf"; //應用程式密碼
-            //string ReceiveMail = "smilehsiang@yahoo.com.tw"; //接收信箱
-
-            //string SmtpServer = "smtp.gmail.com";
-            //int SmtpPort = 587;
-            //MailMessage mms = new MailMessage();
-            //mms.From = new MailAddress(GoogleID);
-            //mms.Subject = "信件主題";
-            //mms.Body = "信件內容";
-            //mms.IsBodyHtml = true;
-            //mms.SubjectEncoding = Encoding.UTF8;
-            //mms.To.Add(new MailAddress(ReceiveMail));
-            //using (SmtpClient client = new SmtpClient(SmtpServer, SmtpPort))
-            //{
-            //    client.EnableSsl = true;
-            //    client.Credentials = new NetworkCredential(GoogleID, TempPwd);//寄信帳密 
-            //    client.Send(mms); //寄出信件
-            //}
-        }
-
 
         //輸入電子信箱後按下寄送認證碼執行的方法
         [HttpPost]
@@ -327,8 +249,72 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
-        //
+        //AES解密方法：解密Key+帳號+送出驗證碼時間所得到的加密字串
+        private string DecryptString(string cipherText, string key)
+        {
+            //cipherText.Replace(" ", "+");
+            using (Aes aesAlg = Aes.Create())
+            {
+                aesAlg.Key = Encoding.UTF8.GetBytes(key);
+                aesAlg.IV = new byte[16]; // 使用零IV，因為不需要解密
 
+                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+                using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(cipherText)))
+                {
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        {
+                            return srDecrypt.ReadToEnd();
+                        }
+                    }
+                }
+            }
+
+            //using (Aes aesAlg = Aes.Create())
+            //{
+            //    aesAlg.Key = Encoding.UTF8.GetBytes(key);
+            //    aesAlg.Mode = CipherMode.ECB;
+            //    aesAlg.Padding = PaddingMode.PKCS7;
+
+            //    ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+            //    using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(cipherText)))
+            //    {
+            //        using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+            //        {
+            //            using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+            //            {
+            //                return srDecrypt.ReadToEnd();
+            //            }
+            //        }
+            //    }
+            //}
+
+            //// 使用 Google Mail Server 發信
+            //string GoogleID = "smilehsiang@gmail.com"; //Google 發信帳號
+            //string TempPwd = "wafdnrkmgrjagvvf"; //應用程式密碼
+            //string ReceiveMail = "smilehsiang@yahoo.com.tw"; //接收信箱
+
+            //string SmtpServer = "smtp.gmail.com";
+            //int SmtpPort = 587;
+            //MailMessage mms = new MailMessage();
+            //mms.From = new MailAddress(GoogleID);
+            //mms.Subject = "信件主題";
+            //mms.Body = "信件內容";
+            //mms.IsBodyHtml = true;
+            //mms.SubjectEncoding = Encoding.UTF8;
+            //mms.To.Add(new MailAddress(ReceiveMail));
+            //using (SmtpClient client = new SmtpClient(SmtpServer, SmtpPort))
+            //{
+            //    client.EnableSsl = true;
+            //    client.Credentials = new NetworkCredential(GoogleID, TempPwd);//寄信帳密 
+            //    client.Send(mms); //寄出信件
+            //}
+        }
+        
+        //修改密碼至資料庫
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public ActionResult DoResetPwd([FromBody] DoResetPwdIn inModel)
@@ -379,7 +365,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 return View();
             }
         }
+        #endregion
 
+        #region 第三方登入Google
+        //Google登入傳回的頁面
         public IActionResult ValidGoogleLogin()
         {
             string? formCredential = Request.Form["credential"]; //回傳憑證
@@ -405,13 +394,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             return View();
         }
 
-        /// <summary>
-        /// 驗證 Google Token
-        /// </summary>
-        /// <param name="formCredential"></param>
-        /// <param name="formToken"></param>
-        /// <param name="cookiesToken"></param>
-        /// <returns></returns>
+        //串接Google登入的api
         public async Task<GoogleJsonWebSignature.Payload?> VerifyGoogleToken(string? formCredential, string? formToken, string? cookiesToken)
         {
             // 檢查空值
@@ -461,5 +444,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
             return payload;
         }
+        #endregion
     }
 }

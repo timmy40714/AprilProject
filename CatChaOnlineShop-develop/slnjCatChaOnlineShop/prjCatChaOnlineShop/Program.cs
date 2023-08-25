@@ -1,10 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CModels;
-//建立金鑰要使用的
-using System;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
 using prjCatChaOnlineShop.Models.ViewModels;
 
 var builder = WebApplication.CreateBuilder(args);

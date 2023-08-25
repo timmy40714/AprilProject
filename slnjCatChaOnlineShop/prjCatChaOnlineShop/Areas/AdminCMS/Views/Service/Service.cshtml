@@ -1,0 +1,310 @@
+﻿@{
+    ViewData["Title"] = "Service";
+    Layout = "~/Areas/AdminCMS/Views/Shared/CMS_Layout.cshtml";
+}
+
+@section Styles{
+
+}
+
+<div class="middle-content">
+
+    <h2 class="mt-3">客服回覆管理</h2>
+
+
+    <div class="search-row row mt-3 mb-3">
+        <div class="row align-items-center mb-3">
+            申訴類別：
+            <select class="form-select w-25" id="payList">
+                <option value="" selected>全部訂單</option>
+                <option>運送問題</option>
+                <option>產品問題</option>
+                <option>付款問題</option>
+                <option>會員權益</option>
+                <option>購物諮詢</option>
+                <option>遊戲檢舉</option>
+                <option>隱私保護</option>
+                <option>獎勵活動</option>
+                <option>其它事項</option>
+            </select>
+        </div>
+        <div class="row align-items-center mb-3">
+            狀態篩選：
+            <select class="form-select w-25" id="deliveryList">
+                <option value="" selected>全部訂單</option>
+                <option>待處理</option>
+                <option>已解決</option>
+            </select>
+        </div>
+        <div class="row align-items-center mb-3">
+            關鍵字搜尋：
+            <input type="text" class="form-control" style="width:25%;" />
+        </div>
+
+        <button type="button" class="keyword_input col-xl-1">查詢</button>
+    </div>
+
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-12">
+                <!--表格-->
+                <table id="service-table" class="table table-striped nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>案件ID</th>
+                            <th>類別ID</th>
+                            <th>申訴類別</th>
+                            <th>建立時間</th>
+                            <th>標題</th>
+                            <th>會員ID</th>
+                            <th>會員姓名</th>
+                            <th>狀態ID</th>
+                            <th>狀態</th>
+                            <th>詳細資料</th>
+                            <th>編輯/刪除</th>
+                        </tr>
+                    </thead>
+                </table>
+                <!--表格-->
+                <!--編輯彈出視窗-->
+                <div class="modal fade" id="editModalToggle" aria-hidden="true"
+                     aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalToggleLabel">編輯客訴案件</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="tab-content" id="nav-tabContent">
+                                    <div class="tab-pane fade show active"
+                                         id="member-edit-nav-home">
+                                        <form>
+
+                                            <div class="form-group">
+                                                <label class="form-label">申訴標題	Complaint Title：</label>
+                                                <input class="form-control" type="text" value="請問線上付款的步驟說明?" readonly disabled />
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label">申訴類別：</label>
+                                                <select class="form-control">
+                                                    <option value="1">運送問題</option>
+                                                    <option value="2">產品問題</option>
+                                                    <option value="3">付款問題</option>
+                                                    <option value="4">會員權益</option>
+                                                    <option value="5">購物諮詢</option>
+                                                    <option value="6">遊戲檢舉</option>
+                                                    <option value="7">隱私保護</option>
+                                                    <option value="8">獎勵活動</option>
+                                                    <option value="9">其它事項</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label">回覆ID　Reply ID：</label>
+                                                <input class="form-control" type="text" readonly disabled />
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label">客訴案件ID　Complaint Case ID</label>
+                                                <input class="form-control" type="text" readonly disabled />
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label">接收者ID(官方)	　Receiver ID (Official)：</label>
+                                                <select class="form-control">
+                                                    <option>管理員1</option>
+                                                    <option>管理員2</option>
+                                                    <option>管理員3</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="w3review">問題內容：</label>
+                                                <textarea class="form-control" id="w3review"
+                                                          name="w3review" rows="4" cols="50" readonly
+                                                          disabled>我無法使用線上付款，能協助我提供操作步驟嗎?
+                                                                    </textarea>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="exampleFormControlTextarea1"
+                                                       class="form-label">回覆：</label>
+                                                <textarea class="form-control"
+                                                          id="exampleFormControlTextarea1"
+                                                          rows="3"></textarea>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="exampleFormControlTextarea1"
+                                                       class="form-label">狀態：</label>
+                                                <select class="form-control">
+                                                    <option value="1">待處理</option>
+                                                    <option value="2">審核中</option>
+                                                    <option value="3">處理中</option>
+                                                    <option value="4">待回覆</option>
+                                                    <option value="5">已回覆</option>
+                                                    <option value="6">已解決</option>
+                                                    <option value="7">關閉</option>
+                                                </select>
+                                            </div>
+
+                                            <button class="btn btn-danger btn-block mt-4"
+                                                    style="width: 100%;">
+                                                儲存
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="tab-pane fade" id="member-edit-nav-paper">
+                                        <p>顯示優惠券 | <button>刪除</button></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--編輯彈出視窗-->
+                <!---詳細資料model-->
+                <div class="modal fade" id="detailModalToggle" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title bg-dark text-white" id="exampleModalToggleLabel">
+                                    其他資訊
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <nav>
+                                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                        <button class="nav-link active" id="nav-home-tab"
+                                                data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
+                                                role="tab">
+                                            會員資料
+                                        </button>
+                                        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
+                                                data-bs-target="#nav-profile" type="button"
+                                                role="tab">
+                                            詳細資料
+                                        </button>
+                                    </div>
+                                </nav>
+                                <div class="tab-content" id="nav-tabContent">
+                                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
+                                         aria-labelledby="nav-home-tab">
+                                        <p>ID</p>
+                                        <p>姓名：</p>
+                                        <p>帳號：</p>
+                                        <p>性別：</p>
+                                        <p>生日：</p>
+                                        <p>E-mail：</p>
+                                        <p>電話：</p>
+                                        <p>地址：</p>
+                                        <p>註冊日期：</p>
+                                        <p>最後登入：</p>
+                                        <p>會員狀態：</p>
+                                    </div>
+                                    <div class="tab-pane fade" id="nav-profile" role="tabpanel">
+                                        <p>申訴標題	Complaint Title：請問線上付款的步驟說明?</p>
+                                        <p>申訴類別ID	Complaint Category ID：付款問題</p>
+                                        <p>
+                                            客訴內容：
+                                            <textarea class="form-control" id="w3review" name="w3review" rows="4" cols="50" readonly disabled>我無法使用線上付款，能協助我提供操作步驟嗎?</textarea>
+                                        </p>
+                                        <p>
+                                            訊息(接收者)內容　 Message (Recipient) Content：
+                                            <textarea class="form-control" id="w3review" name="w3review" rows="4" cols="50" readonly disabled>已將操作步驟發送至郵件，請查看收件匣</textarea>
+                                        </p>
+                                        <p> 回覆ID　Reply ID：</p>
+                                        <p>客訴案件ID　Complaint Case ID</p>
+                                        <p>接收者ID(官方)	　Receiver ID (Official) - </p>
+                                        <p>發送時間	Sent Time</p>
+                                        <p>客訴狀態ID：35835303</p>
+                                        <p>客訴案件ID：_______(此欄待確認)</p>
+                                        <p>建立時間：2023/08/16 </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!---詳細資料model-->
+                @section Scripts{
+                    <script>
+                        //==========丟資料給DataTables前先console.log json 出來看結構是長怎樣
+                        $(document).ready(function () {
+                            $.ajax({
+                                url: '@Url.Action("ShowComplaintCase", "Service")',
+                                type: 'GET',
+                                success: function (data) {
+                                    console.log(data);
+                                },
+                                error: function (error) {
+                                    console.log(error);
+                                }
+                            })
+                        });
+                        //==========丟資料給DataTables前先console.log json 出來看結構是長怎樣
+
+ //客訴案件ID	 申訴類別	建立時間   標題	會員姓名	狀態	詳細資料	編輯 / 刪除
+
+                        //==================datatable
+                        $('#service-table').DataTable({
+                            "ajax": '@Url.Action("ShowComplaintCase", "Service")',
+                            "columns": [
+                                { data: 'complaintCaseId' },
+                                { data: 'appealCategoryId' },
+                                { data: 'categoryName' },
+                                { data: 'creationTime' },
+                                { data: 'complaintTitle' },
+                                { data: 'memberId' },
+                                { data: 'name' },
+                                { data: 'complaintStatusId' },
+                                { data: 'complaintStatusName' },
+                                {
+                                    data: null, // 這裡設置為 null，因為我們會在 render 中創建按鈕
+                                    render: function (data, type, row, meta) {
+                                        return '<button class="detail_input" data-bs-toggle="modal" href="#detailModalToggle" role="button" data-memberid="' + row.memberId + '" data-caseid="' + row.complaintCaseId + '">詳細資料</button>';
+                                    }
+                                },
+                                {
+                                    data: null,
+                                    render: function (data, type, row, meta) {
+                                        var editButton = '<button class="btn edit_memberbtn" data-bs-toggle="modal" href="#editModalToggle" role="button" data-memberid="' + row.memberId + '"><i class="fas fa-edit"></i></button>';
+                                        return editButton;
+                                    }
+                                },
+                            ],
+                            "paging": true, //分頁功能
+                            responsive: true, //RWD
+                            "searching": false, //隱藏搜尋框
+                        });
+
+
+                        //==================按下「詳細資料」按鈕的點擊事件處理
+                        $('#service-table').on('click', '.detail_input', function () {
+                            var memberId = $(this).data('memberid'); // 從按鈕的 data-memberid 屬性中獲取 memberId
+                            var caseId = $(this).data('caseid'); //這邊要注意大小寫....不然可能會抓不到值
+
+                            //----------------AJAX
+                            $.ajax({
+                                url: '@Url.Action("GetCaseDetails", "Service")',
+                                type: 'GET',
+                                data: { memberId: memberId, caseId: caseId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
+                                success: function (data) {
+                                    console.log(data);
+                                },
+                                error: function (error, a, b) {
+                                    console.log(error);
+                                    console.log(a);
+                                    console.log(b);
+                                    console.log("Error retrieving member details.");
+                                }
+                            });
+                        });
+                    </script>
+                }
