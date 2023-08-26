@@ -6,6 +6,7 @@
         public ShopProductTotal product { get;  }
         public int cId { get; set; }
         public string? cName { get; set; }
+
         public int? c剩餘庫存;
         public decimal? cPrice { get; set; }
 

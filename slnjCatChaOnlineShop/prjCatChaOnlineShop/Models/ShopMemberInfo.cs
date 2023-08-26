@@ -11,7 +11,7 @@ public partial class ShopMemberInfo
 
     public string MemberAccount { get; set; }
 
-    public string? CharacterName { get; set; }
+    public string CharacterName { get; set; }
 
     public int? LevelId { get; set; }
 
@@ -48,6 +48,8 @@ public partial class ShopMemberInfo
     public bool? MemberStatus { get; set; }
 
     public string MemberImage { get; set; }
+
+    public virtual ICollection<EcpayOrders> EcpayOrders { get; set; } = new List<EcpayOrders>();
 
     public virtual ICollection<Game1on1MessageData> Game1on1MessageDataReceiver { get; set; } = new List<Game1on1MessageData>();
 

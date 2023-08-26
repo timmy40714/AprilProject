@@ -19,6 +19,8 @@ public partial class cachaContext : DbContext
 
     public virtual DbSet<AnnouncementTypeData> AnnouncementTypeData { get; set; }
 
+    public virtual DbSet<EcpayOrders> EcpayOrders { get; set; }
+
     public virtual DbSet<Game1on1MessageData> Game1on1MessageData { get; set; }
 
     public virtual DbSet<GameAchievementList> GameAchievementList { get; set; }
@@ -149,6 +151,24 @@ public partial class cachaContext : DbContext
 
             entity.Property(e => e.AnnouncementTypeId).HasColumnName("Announcement Type ID");
             entity.Property(e => e.AnnouncementTypeName).HasColumnName("Announcement Type Name");
+        });
+
+        modelBuilder.Entity<EcpayOrders>(entity =>
+        {
+            entity.HasKey(e => e.MerchantTradeNo);
+
+            entity.Property(e => e.MerchantTradeNo).HasMaxLength(50);
+            entity.Property(e => e.MemberId).HasColumnName("MemberID");
+            entity.Property(e => e.PaymentDate).HasColumnType("datetime");
+            entity.Property(e => e.PaymentType).HasMaxLength(50);
+            entity.Property(e => e.PaymentTypeChargeFee).HasMaxLength(50);
+            entity.Property(e => e.RtnMsg).HasMaxLength(50);
+            entity.Property(e => e.TradeDate).HasMaxLength(50);
+            entity.Property(e => e.TradeNo).HasMaxLength(50);
+
+            entity.HasOne(d => d.Member).WithMany(p => p.EcpayOrders)
+                .HasForeignKey(d => d.MemberId)
+                .HasConstraintName("FK_EcpayOrders_Shop.Member Info");
         });
 
         modelBuilder.Entity<Game1on1MessageData>(entity =>
