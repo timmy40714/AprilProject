@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using prjCatChaOnlineShop.Models;
 using System.Net.Http.Headers;
 
+
 namespace prjCatChaOnlineShop.Controllers.Home
 {
     public class EcpayController : Controller
@@ -24,10 +25,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
         [HttpPost]
         [Route("Ecpay/AddOrders")]
-        public string AddOrders(get_localStorage json)
+        public string AddOrders([FromBody]get_localStorage json)
         {
             EcpayOrders Orders = new EcpayOrders();
-            Orders.MemberId = Convert.ToInt32(json.MerchantID);
+            Orders.MemberId = json.MerchantID;
             Orders.MerchantTradeNo = json.MerchantTradeNo;
             Orders.RtnCode = 0; //未付款
             Orders.RtnMsg = "訂單成功尚未付款";

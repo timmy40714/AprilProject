@@ -11,7 +11,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         private readonly cachaContext _context;
         public EcpayHomeController(cachaContext context)
         {
-            context = _context;
+            _context = context;
         }
 
         //step1 : 網頁導入傳值到前端
@@ -20,23 +20,23 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
             var orderId = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 20);
             //需填入你的網址
-            var website = $"https://localhost:44325/";
+            var website = $"https://localhost:7218";
             var order = new Dictionary<string, string>
             {
                 { "MerchantTradeNo",  orderId},
                 { "MerchantTradeDate",  DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")},
                 { "TotalAmount",  "100"},
                 { "TradeDesc",  "無"},
-                { "ItemName",  "測試商品"},
+                { "ItemName",  "測試商品catcha"},
                 { "ExpireDate",  "3"},
                 { "CustomField1",  ""},
                 { "CustomField2",  ""},
                 { "CustomField3",  ""},
                 { "CustomField4",  ""},
-                { "ReturnURL",  $"{website}/api/Ecpay/AddPayInfo"},
-                { "OrderResultURL", $"{website}/Home/PayInfo/{orderId}"},
-                { "PaymentInfoURL",  $"{website}/api/Ecpay/AddAccountInfo"},
-                { "ClientRedirectURL",  $"{website}/Home/AccountInfo/{orderId}"},
+                { "ReturnURL",  $"{website}/Ecpay/AddPayInfo"},
+                { "OrderResultURL", $"{website}/EcpayHome/PayInfo/{orderId}"},
+                { "PaymentInfoURL",  $"{website}/Ecpay/AddAccountInfo"},
+                { "ClientRedirectURL",  $"{website}/EcpayHome/AccountInfo/{orderId}"},
                 { "MerchantID",  "2000132"},
                 { "IgnorePayment",  "GooglePay#WebATM#CVS#BARCODE"},
                 { "PaymentType",  "aio"},
@@ -49,13 +49,14 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
         /// step5 : 取得付款資訊，更新資料庫 OrderResultURL
         [HttpPost]
-        public ActionResult PayInfo(FormCollection id)
+        public ActionResult PayInfo(IFormCollection id)
         {
             var data = new Dictionary<string, string>();
             foreach (string key in id.Keys)
             {
                 data.Add(key, id[key]);
             }
+
             var Orders = _context.EcpayOrders.ToList().Where(m => m.MerchantTradeNo == id["MerchantTradeNo"]).FirstOrDefault();
             Orders.RtnCode = int.Parse(id["RtnCode"]);
             if (id["RtnMsg"] == "Succeeded") Orders.RtnMsg = "已付款";

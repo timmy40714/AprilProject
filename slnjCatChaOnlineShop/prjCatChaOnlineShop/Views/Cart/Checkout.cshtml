@@ -71,6 +71,7 @@
 </div>
 <!-- End All Title Box -->
 <!--中間主畫面Start-->
+<form id="checkoutForm">
 <div class="cart-box-main">
     <div class="container">
         <div class="row ">
@@ -270,7 +271,10 @@
                                 <!-- 觸發選擇711超商的按鈕 -->
                                 <button type="button" class="chooseStore_btn" data-bs-toggle="modal"
                                         data-bs-target="#choose711Store">
-                                    選擇門市
+                                    我儲存的門市
+                                </button>
+                                <button type="button" class="chooseStore_btn" id="choose711CVS">
+                                    選擇新的超商門市
                                 </button>
                                 <!-- 選擇711超商的互動視窗 -->
                                 <div class="modal fade" id="choose711Store" data-bs-backdrop="static"
@@ -1190,7 +1194,7 @@
         </div>
     </div>
 </div>
-
+</form>
 <!--中間主畫面End-->
 @section Scripts{
     <!-- ALL JS FILES -->
@@ -1226,6 +1230,29 @@
     <script src="~/js/myScript.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#choose711CVS").click(function () {
+                $.ajax({
+                    Headers: 'Access-Control-Allow-Origin: *',
+                    type: 'POST',
+                    url: 'https://logistics-stage.ecpay.com.tw/Express/Create', // API 串接網址
+                    contentType: 'application / x - www - form - urlencoded',
+                    success: function (response) {
+                        // 處理成功回應
+                        console.log(response);
+                        // 在這裡可以處理 API 回應，例如顯示在頁面上
+                    },
+                    error: function (error) {
+                        // 處理錯誤回應
+                        console.log(error);
+                        // 在這裡可以處理錯誤情況，例如顯示錯誤訊息
+                    },
+                });
+            });
+        });
+    </script>
 }
 
 

@@ -31,7 +31,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
         public IActionResult Checkout() 
         {
-            if (HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null)
+            string loginUser = HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER);
+            string productList = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
+
+            if (loginUser != null && productList !=null)
             {
                 // 從 Session 中讀取抓到的 MEMBER ID
                 var memberInfoJson = HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER);
@@ -40,9 +43,13 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 // 使用 CheckoutService 來獲取可用的優惠券
                 var usableCoupons = _checkoutService.GetUsableCoupons(memberInfo.MemberId);
 
+                //購物車
+                var cartItems = JsonSerializer.Deserialize<List<CCartItem>>(productList);
+
                 var viewModel = new CCheckoutViewModel
                 {
                     memberUsableCoupon = usableCoupons ?? new List<CGetUsableCouponModel>(), // 初始化為空列表
+                    cartItems= cartItems?? new List<CCartItem>(),
                 };
 
                 return View(viewModel);

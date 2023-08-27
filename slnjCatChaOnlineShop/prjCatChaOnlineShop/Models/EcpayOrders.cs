@@ -9,7 +9,7 @@ public partial class EcpayOrders
 {
     public string MerchantTradeNo { get; set; }
 
-    public int? MemberId { get; set; }
+    public string MemberId { get; set; }
 
     public int? RtnCode { get; set; }
 
@@ -28,6 +28,4 @@ public partial class EcpayOrders
     public string TradeDate { get; set; }
 
     public int? SimulatePaid { get; set; }
-
-    public virtual ShopMemberInfo Member { get; set; }
 }

@@ -49,8 +49,6 @@ public partial class ShopMemberInfo
 
     public string MemberImage { get; set; }
 
-    public virtual ICollection<EcpayOrders> EcpayOrders { get; set; } = new List<EcpayOrders>();
-
     public virtual ICollection<Game1on1MessageData> Game1on1MessageDataReceiver { get; set; } = new List<Game1on1MessageData>();
 
     public virtual ICollection<Game1on1MessageData> Game1on1MessageDataSender { get; set; } = new List<Game1on1MessageData>();
