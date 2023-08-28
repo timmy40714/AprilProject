@@ -1,5 +1,5 @@
 ﻿$("#checkoutBtn").on('click', (e) => {
-    /* e.preventDefault();*/ //因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容
+    /* e.preventDefault()*/; //因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容
 
     let formData = $("#form").serializeArray();
     var json = {};

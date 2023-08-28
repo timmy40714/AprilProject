@@ -16,32 +16,33 @@ namespace prjCatChaOnlineShop.Controllers.Home
         //step1 : 網頁導入傳值到前端
         public ActionResult Index()
         {
-            var orderId = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 20);
-            //需填入你的網址
-            var website = $"https://localhost:7218";
-        var order = new Dictionary<string, string>
-         {
-        //綠界需要的參數
-        { "MerchantTradeNo",  orderId},
-        { "MerchantTradeDate",  DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")},
-        { "TotalAmount",  "100"},
-        { "TradeDesc",  "無"},
-        { "ItemName",  "測試商品"},
-        { "ExpireDate",  "3"},
-        { "CustomField1",  ""},
-        { "CustomField2",  ""},
-        { "CustomField3",  ""},
-        { "CustomField4",  ""},
-        { "ReturnURL",  $"{website}/Ecpay/AddPayInfo"},
-        { "OrderResultURL", $"{website}/EcpayHome/PayInfo/{orderId}"},
-        { "PaymentInfoURL",  $"{website}/Ecpay/AddAccountInfo"},
-        { "ClientRedirectURL",  $"{website}/EcpayHome/AccountInfo/{orderId}"},
-        { "MerchantID",  "2000132"},
-        { "IgnorePayment",  "GooglePay#WebATM#CVS#BARCODE"},
-        { "PaymentType",  "aio"},
-        { "ChoosePayment",  "ALL"},
-        { "EncryptType",  "1"},
-         };
+
+          var orderId = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 20);
+          //需填入你的網址
+          var website = $"https://localhost:7218";
+          var order = new Dictionary<string, string>
+          {
+            //綠界需要的參數
+            { "MerchantTradeNo",  orderId},
+            { "MerchantTradeDate",  DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")},
+            { "TotalAmount",  "100"},
+            { "TradeDesc",  "無"},
+            { "ItemName",  "測試商品"},
+            { "ExpireDate",  "3"},
+            { "CustomField1",  ""},
+            { "CustomField2",  ""},
+            { "CustomField3",  ""},
+            { "CustomField4",  ""},
+            { "ReturnURL",  $"{website}/Ecpay/AddPayInfo"},
+            { "OrderResultURL", $"{website}/EcpayHome/PayInfo/{orderId}"},
+            { "PaymentInfoURL",  $"{website}/Ecpay/AddAccountInfo"},
+            { "ClientRedirectURL",  $"{website}/EcpayHome/AccountInfo/{orderId}"},
+            { "MerchantID",  "2000132"},
+            { "IgnorePayment",  "GooglePay#WebATM#CVS#BARCODE"},
+            { "PaymentType",  "aio"},
+            { "ChoosePayment",  "ALL"},
+            { "EncryptType",  "1"},
+          };
             //檢查碼
             order["CheckMacValue"] = GetCheckMacValue(order);
             return View(order);
@@ -93,7 +94,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 ecpayOrder.SimulatePaid = int.Parse(id["SimulatePaid"]);
                 _context.SaveChanges();
             }
-            return View("EcpayView", data);
+            return RedirectToAction("ConfrimOrder","Cart");
         }
         /// step5 : 取得虛擬帳號 資訊
         [HttpPost]

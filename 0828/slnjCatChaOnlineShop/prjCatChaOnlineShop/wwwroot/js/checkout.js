@@ -6,7 +6,7 @@ $(document).ready(function () {
         console.log(couponName);
         // 將優惠券名稱填入<input>標籤
         $("#couponCodeInput").val(couponName);
-         // 模擬使用者操作關閉模態框
+        // 模擬使用者操作關閉模態框
         $('.btn-close').click();
     });
 });
@@ -73,28 +73,53 @@ $(document).ready(function () {
 });
 
 //按下送出訂單的按鈕將訂單新增到資料庫
-$("#submit-order-btn").on('click', (e) => {
-    e.preventDefault(); // 防止表單的默認提交行為
+//$("#submit-order-btn").on('click', (e) => {
+//    e.preventDefault(); // 防止表單的默認提交行為
 
-    let formData = $("#checkForm").serializeArray();
-    var json = {};
-    $.each(formData, function () {
-        json[this.name] = this.value || "";
-    });
+//    let formData = $("#checkForm").serializeArray();
+//    var json = {};
+//    $.each(formData, function () {
+//        json[this.name] = this.value || "";
+//    });
 
-    // 發送 AJAX 請求到 AddOrder 方法
-    $.ajax({
-        type: 'POST',
-        url: '/Cart/AddOrder', // 使用適當的路由 URL
-        contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify(json),
-        success: function (res) {
-            console.log(res);
-            // 根據需要處理成功回應，例如轉向到訂單確認頁面
-        },
-        error: function (err) {
-            console.log(err);
-            // 處理錯誤回應，例如顯示錯誤消息給用戶
-        },
+//    // 發送 AJAX 請求到 AddOrder 方法
+//    $.ajax({
+//        type: 'POST',
+//        url: '/Cart/AddOrder', // 使用適當的路由 URL
+//        contentType: 'application/json; charset=utf-8',
+//        data: JSON.stringify(json),
+//        success: function (res) {
+//            console.log(res);
+//            // 根據需要處理成功回應，例如轉向到訂單確認頁面
+//        },
+//        error: function (err) {
+//            console.log(err);
+//            // 處理錯誤回應，例如顯示錯誤消息給用戶
+//        },
+//    });
+//});
+
+$(document).ready(function () {
+    $("#submit-order-btn").on('click', (e) => {
+        e.preventDefault(); /*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
+        console.log("阿囉哈你好嗎可以讓我過關嗎^___^??")
+        let formData = $("#form").serializeArray();
+        var json = {};
+        $.each(formData, function () {
+            json[this.name] = this.value || "";
+        });
+         console.log(json); /*F12 -> console*/
+        //step3 : 新增訂單到資料庫
+        $.ajax({
+            type: 'POST',
+            url: 'https://localhost:7218/Ecpay/AddOrders',
+            contentType: 'application/json; charset=utf-8',
+            //data: JSON.stringify(json),
+            success: function (res) {
+                console.log(res);
+            },
+            error: function (err) { console.log(err); },
+        });
+
     });
-});
+}
