@@ -71,7 +71,7 @@
 </div>
 <!-- End All Title Box -->
 <!--中間主畫面Start-->
-<form id="checkoutForm">
+
 <div class="cart-box-main">
     <div class="container">
         <div class="row ">
@@ -92,7 +92,7 @@
                                             <div class="media-body">
                                                 <a asp-controller="Index" asp-action="ShopDetail"> @item.cName </a>
                                                 <div class="small text-muted">
-                                                    價格: NT @item.cPrice <span class="mx-2">|</span> 數量: 
+                                                    價格: NT @item.cPrice <span class="mx-2">|</span> 數量:
                                                     <span class="mx-2">|</span> 小計: NT
                                                 </div>
                                             </div>
@@ -138,8 +138,8 @@
                         <div class="col-md-6 mb-2">
                             <label for="cc-name">優惠券代碼</label>
                             <div class="input-group mb-2">
-                                <input type="text" class="form-control" placeholder="請選擇優惠券"
-                                       aria-label="請選擇優惠券" aria-describedby="button-addon2">
+                                <input type="text" class="form-control" placeholder="請選擇優惠券" id="couponCodeInput"
+                                       aria-label="請選擇優惠券" aria-describedby="button-addon2" readonly>
                                 <!-- 觸發互動視窗的按鈕 -->
                                 <button class="coupon-box-btn ml-auto btn hvr-hover coupon-box" type="button"
                                         data-bs-toggle="modal" data-bs-target="#myCouponBackdrop">
@@ -173,14 +173,14 @@
                                                             <div class="coupon-intro  text-center">
                                                                 <!--刪除MyCss.css 123行，增加160行hover-->
                                                                 <div class="coupon-status align-middle text-center">
-                                                                    <button type="button" class=" btn">使用</button>
+                                                                    <button type="button" class="btn useCouponBtn" data-coupon-code="@coupon.CouponName">使用</button>
                                                                 </div>
                                                             </div>
                                                             <div class="coupon-middle flex-container flex-1">
                                                                 <div class="middle-left flex-1">
                                                                     <span class="coupon-tag">
                                                                         限用1次
-                                                                    </span>&ensp;<span class="coupon-name"> @coupon.CouponName </span>
+                                                                    </span>&ensp;<span class="coupon-name" name="couponName"> @coupon.CouponName </span>
                                                                     <div class="coupon-description">
                                                                         @coupon.CouponContent
                                                                     </div>
@@ -433,12 +433,15 @@
                                 <div class="tab-content" id="nav-tabContent">
                                     <div class="tab-pane fade show active" id="nav-homeMemberInfo" role="tabpanel"
                                          aria-labelledby="nav-homeMemberInfo-tab">
-                                        <ul>
-                                            <li>姓名：徐雅莉</li>
-                                            <li>電話：0923468145</li>
-                                            <li>Email：seoari@gmail.com</li>
-                                            <li>地址： 台北市信義區松壽路12號</li>
-                                        </ul>
+                                        @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null)
+                                        {
+                                            <ul>
+                                                <li>姓名：@memberinfo.Name </li>
+                                                <li>電話：@memberinfo.PhoneNumber </li>
+                                                <li>Email：@memberinfo.Email</li>
+                                                <li>地址： @memberinfo.Address</li>
+                                            </ul>
+                                        }
                                     </div>
 
                                     <div class="tab-pane fade" id="nav-profile" role="tabpanel"
@@ -1151,6 +1154,7 @@
                         <a href="https://www.einvoice.nat.gov.tw/?CSRT=6201288656407980614"
                            class="einvoice-link">財政部電子發票流程說明</a>
                     </label>
+                    <div id="error-message" class="text-danger"></div>
                 </div>
             </div>
         </div>
@@ -1188,13 +1192,13 @@
                 </div>
             </div>
             <div class=" coupon-box-btn col-12 d-flex shopping-box ">
-                <a asp-controller="Cart" asp-action="ConfrimOrder"
+                <a asp-controller="Cart" asp-action="ConfrimOrder" id="submit-order-btn"
                    class=" checkout-btn ml-auto btn hvr-hover">送出訂單</a>
             </div>
         </div>
     </div>
 </div>
-</form>
+
 <!--中間主畫面End-->
 @section Scripts{
     <!-- ALL JS FILES -->
@@ -1211,7 +1215,7 @@
             crossorigin="anonymous"></script>
     <!---->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="~/js/jquery-3.2.1.min.js"></script>
+    @*<script src="~/js/jquery-3.2.1.min.js"></script>*@
     <script src="~/js/popper.min.js"></script>
     <script src="~/js/bootstrap.min.js"></script>
     <!-- ALL PLUGINS -->
@@ -1225,13 +1229,12 @@
     <script src="~/js/baguetteBox.min.js"></script>
     <script src="~/js/form-validator.min.js"></script>
     <script src="~/js/contact-form-script.js"></script>
-    <script src="~/js/custom.js"></script>
+    @*<script src="~/js/custom.js"></script>*@
     <!--nav導覽與頁籤使用-->
-    <script src="~/js/myScript.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @*<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>*@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-
-    <script>
+    <script src="~/js/checkout.js"></script>
+    @* <script>
         $(document).ready(function () {
             $("#choose711CVS").click(function () {
                 $.ajax({
@@ -1252,7 +1255,8 @@
                 });
             });
         });
-    </script>
+    </script>*@
+
 }
 
 
