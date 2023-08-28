@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using prjCatChaOnlineShop.Areas.AdminCMS.Models;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CDictionary;
 using prjCatChaOnlineShop.Models.CModels;
@@ -15,21 +16,21 @@ namespace prjCatChaOnlineShop.Controllers.Home
         private readonly IWebHostEnvironment _host;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ProductService _productService;
-        
-        public CartController(cachaContext context,CheckoutService checkoutService ,IWebHostEnvironment host, IHttpContextAccessor httpContextAccessor, ProductService productService)
+
+        public CartController(cachaContext context, CheckoutService checkoutService, IWebHostEnvironment host, IHttpContextAccessor httpContextAccessor, ProductService productService)
         {
             _context = context;
             _host = host;
             _httpContextAccessor = httpContextAccessor;
             _productService = productService;
             _checkoutService = checkoutService;
-            
+
         }
         public IActionResult ConfrimOrder()
-        { 
+        {
             return View();
         }
-        public IActionResult Checkout() 
+        public IActionResult Checkout()
         {
             string loginUser = HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER);
             string productList = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
@@ -66,10 +67,58 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 return View();
             }
             else
-            {            
+            {
                 List<CCartItem> cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
                 return View(cart);
             }
         }
+
+        private int? GetCurrentMemberId()
+        {
+            var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+            if (memberInfoJson != null)
+            {
+                var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+                return memberInfo.MemberId;
+            }
+
+            return null;
+        }
+
+        //[HttpPost]
+        //public IActionResult AddOrder([FromBody] AddOrderViewModel orderData)
+        //{
+        //    try
+        //    {
+        //        var memberId = GetCurrentMemberId();
+
+        //        if (memberId != null)
+        //        {
+        //            // 在這裡處理訂單創建邏輯
+        //            ShopOrderTotalTable order = new ShopOrderTotalTable();
+        //            order.MemberId = memberId;
+        //            order.OrderCreationDate = DateTime.Now;
+        //            order.OrderStatusId = 2;
+
+        //            // 執行資料庫新增操作
+        //            // 假設您使用 Entity Framework Core，可以像下面這樣執行新增操作
+        //            using (var dbContext = new cachaContext()) // 替換成您的 DbContext
+        //            {
+        //                dbContext.ShopOrderTotalTable.Add(order);
+        //                dbContext.SaveChanges();
+        //            }
+
+        //            // 此處您可以返回成功或其他所需的回應
+        //            return Ok(new { message = "訂單已成功創建。" });
+        //        }
+
+        //        return BadRequest(new { message = "無法識別的會員 ID。" });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { message = "內部錯誤：" + ex.Message });
+        //    }
+        //}
+
     }
 }

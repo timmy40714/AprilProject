@@ -46,7 +46,6 @@ $(document).ready(function () {
 
 
 
-
 //同意退換貨條款的選項為必勾選的項目，若沒有勾選擇無法送出訂單
 $(document).ready(function () {
     // 監聽 checkbox 變更事件
@@ -73,3 +72,29 @@ $(document).ready(function () {
     });
 });
 
+//按下送出訂單的按鈕將訂單新增到資料庫
+$("#submit-order-btn").on('click', (e) => {
+    e.preventDefault(); // 防止表單的默認提交行為
+
+    let formData = $("#checkForm").serializeArray();
+    var json = {};
+    $.each(formData, function () {
+        json[this.name] = this.value || "";
+    });
+
+    // 發送 AJAX 請求到 AddOrder 方法
+    $.ajax({
+        type: 'POST',
+        url: '/Cart/AddOrder', // 使用適當的路由 URL
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(json),
+        success: function (res) {
+            console.log(res);
+            // 根據需要處理成功回應，例如轉向到訂單確認頁面
+        },
+        error: function (err) {
+            console.log(err);
+            // 處理錯誤回應，例如顯示錯誤消息給用戶
+        },
+    });
+});

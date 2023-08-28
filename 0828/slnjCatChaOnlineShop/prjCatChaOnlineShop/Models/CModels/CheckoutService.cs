@@ -93,5 +93,8 @@ namespace prjCatChaOnlineShop.Models.CModels
             }
             return new List<CgetUsableAddressModel>(); // 如果沒有找到可用地址，返回空列表
         }
+
+        //按出送出訂單將訂單存回資料庫,OrderStatusID=2
+
     }
 }

@@ -19,8 +19,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
             var orderId = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 20);
             //需填入你的網址
             var website = $"https://localhost:7218";
-            var order = new Dictionary<string, string>
-    {
+        var order = new Dictionary<string, string>
+         {
         //綠界需要的參數
         { "MerchantTradeNo",  orderId},
         { "MerchantTradeDate",  DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")},
@@ -41,7 +41,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         { "PaymentType",  "aio"},
         { "ChoosePayment",  "ALL"},
         { "EncryptType",  "1"},
-    };
+         };
             //檢查碼
             order["CheckMacValue"] = GetCheckMacValue(order);
             return View(order);
@@ -82,7 +82,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 data.Add(key, id[key]);
             }
-           
+
             string temp = id["MerchantTradeNo"]; //寫在LINQ(下一行)會出錯，
             var ecpayOrder = _context.EcpayOrders.Where(m => m.MerchantTradeNo == temp).FirstOrDefault();
             if (ecpayOrder != null)
@@ -104,7 +104,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 data.Add(key, id[key]);
             }
-            
+
             string temp = id["MerchantTradeNo"]; //寫在LINQ會出錯
             var ecpayOrder = _context.EcpayOrders.Where(m => m.MerchantTradeNo == temp).FirstOrDefault();
             if (ecpayOrder != null)
