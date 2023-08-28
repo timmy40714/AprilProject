@@ -9,5 +9,8 @@ namespace prjCatChaOnlineShop.Models.ViewModels
 
        //會員的購物車商品
        public List<CCartItem> cartItems { get; set; }
+
+        //會員儲存的常用地址
+        public List<CgetUsableAddressModel> memberUsableAddress { get; set; }
     }
 }

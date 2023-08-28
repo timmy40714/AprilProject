@@ -447,10 +447,9 @@
                                     <div class="tab-pane fade" id="nav-profile" role="tabpanel"
                                          aria-labelledby="nav-profile-tab">
                                         <ul>
-                                            <li>姓名：尹詩炫</li>
-                                            <li>電話：0983726593</li>
-                                            <li>Email：chungah@gmail.com</li>
-                                            <li>地址： 新北市板橋區縣民大道二段7號</li>
+                                            <li>姓名：<span id="recipientNameDisplay"></span></li>
+                                            <li>電話：<span id="recipientPhoneDisplay"></span></li>
+                                            <li>地址：<span id="recipientAddressDisplay"></span></li>
                                         </ul>
                                         <div class="input-group mb-3">
                                             <!-- 觸發選擇地址視窗的按鈕 -->
@@ -478,42 +477,35 @@
                                                                 <tr>
                                                                     <th>選擇</th>
                                                                     <th>姓名</th>
-                                                                    <th>電子信箱</th>
                                                                     <th>地址</th>
                                                                     <th>聯絡電話</th>
-                                                                    <th>刪除</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <input type="radio" name="select"
-                                                                               value="option1">
-                                                                    </td>
-                                                                    <td>徐雅莉</td>
-                                                                    <td>123@gmail.com</td>
-                                                                    <td>台北市信義區松壽路12號</td>
-                                                                    <td>0923468145</td>
-                                                                    <td><span id="delete">刪除</span></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <input type="radio" name="select"
-                                                                               value="option1">
-                                                                    </td>
-                                                                    <td>王小美</td>
-                                                                    <td>567@gmail.com</td>
-                                                                    <td>台北市萬華區成都路33號</td>
-                                                                    <td>0985624473</td>
-                                                                    <td><span id="delete">刪除</span></td>
-                                                                </tr>
+                                                                @if (Model != null && Model.memberUsableAddress != null)
+                                                                {
+                                                                    foreach (var address in Model.memberUsableAddress)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>
+                                                                                <input type="radio" name="select" value="option1" class="address-radio"
+                                                                                       data-RecipientName="@address.RecipientName" data-RecipientAddress="@address.RecipientAddress"
+                                                                                       data-RecipientPhone="@address.RecipientPhone">
+
+                                                                            </td>
+                                                                            <td> @address.RecipientName </td>
+                                                                            <td> @address.RecipientAddress </td>
+                                                                            <td> @address.RecipientPhone </td>
+                                                                        </tr>
+                                                                    }
+                                                                }
                                                             </tbody>
                                                         </table>
 
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="submit" class="coupon-btn"
-                                                                data-bs-dismiss="modal">
+                                                                data-bs-dismiss="modal" id="selectedAddress">
                                                             確定
                                                         </button>
 

@@ -42,13 +42,15 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
                 // 使用 CheckoutService 來獲取可用的優惠券
                 var usableCoupons = _checkoutService.GetUsableCoupons(memberInfo.MemberId);
-
+                // 使用 CheckoutService 來獲取儲存的地址
+                var usableAddress = _checkoutService.GetUsableAddresses(memberInfo.MemberId);
                 //購物車
                 var cartItems = JsonSerializer.Deserialize<List<CCartItem>>(productList);
 
                 var viewModel = new CCheckoutViewModel
                 {
                     memberUsableCoupon = usableCoupons ?? new List<CGetUsableCouponModel>(), // 初始化為空列表
+                    memberUsableAddress = usableAddress ?? new List<CgetUsableAddressModel>(),
                     cartItems= cartItems?? new List<CCartItem>(),
                 };
 
