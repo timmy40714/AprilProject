@@ -379,3 +379,12 @@ background-color:#EDD8C0 ;
     font-family: 'Dosis', sans-serif;
     line-height: 1.80857;
 }
+
+
+.form-control[readonly] {
+    background-color: #F8F0E7 !important;
+}
+
+.hidden {
+    display: none;
+}
