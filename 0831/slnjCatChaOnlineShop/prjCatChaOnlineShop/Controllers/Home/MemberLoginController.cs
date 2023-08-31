@@ -187,7 +187,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 resetMember.Password = inModel.NewUserPwd;
                 _context.Update(resetMember);
                 _context.SaveChanges();
-                return RedirectToAction("Login");
+                outModel.ResultMsg = "更新成功";
+                return Json(outModel);
+                //return RedirectToAction("Login");
             }
             else
             {
