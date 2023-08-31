@@ -1,5 +1,54 @@
 ﻿//優惠券選擇，當使用者選擇該優惠券時將優惠券名稱填至input標籤裡
+//$(document).ready(function () {
+//    $('.useCouponBtn').on('click', function () {
+//        // 獲取按鈕上的優惠券名稱
+//        var couponName = $(this).data('coupon-code');
+//        console.log(couponName);
+//        // 將優惠券名稱填入<input>標籤
+//        $("#couponCodeInput").val(couponName);
+//        // 模擬使用者操作關閉模態框
+//        $('.btn-close').click();
+//    });
+//});
+
+//選擇宅配或郵寄地址將使用者選擇的該地址填至表格裡
+//這個代碼假設選擇的 < input > 元素是位於表格行(<tr>)內部的第一個列(<td>)中。可以根據HTML結構調整find函數中的nth-child選擇器以匹配你的實際結構。
+//這樣就不需要設置每個<input>元素的ID，並且你可以根據所選的行來查找相關的資料，然後放到指定的<span>元素中。
+//$(document).ready(function () {
+//    // 監聽確定按鈕的點擊事件
+//    $('#selectedAddress').click(function () {
+//        // 獲取所選的地址的相關數據
+//        var selectedAddress = $('input.address-radio:checked');
+
+//        // 獲取所選地址所在的<tr>
+//        var selectedRow = selectedAddress.closest('tr');
+
+//        // 在所選地址所在的<tr>中查找相關的資料
+//        var recipientName = selectedRow.find('td:nth-child(2)').text();
+//        var recipientAddress = selectedRow.find('td:nth-child(3)').text();
+//        var recipientPhone = selectedRow.find('td:nth-child(4)').text();
+
+//        console.log(recipientName);
+//        console.log(recipientAddress);
+//        console.log(recipientPhone);
+
+//        // 填入<ul>中的<span>元素
+//        $('#recipientNameDisplay').text(recipientName);
+//        $('#recipientAddressDisplay').text(recipientAddress);
+//        $('#recipientPhoneDisplay').text(recipientPhone);
+
+//        // 模擬使用者操作關閉模態框
+//        $('.btn-close').click();
+//    });
+//});
+
+
+
+
+
+
 $(document).ready(function () {
+    //優惠券選擇，當使用者選擇該優惠券時將優惠券名稱填至input標籤裡
     $('.useCouponBtn').on('click', function () {
         // 獲取按鈕上的優惠券名稱
         var couponName = $(this).data('coupon-code');
@@ -9,13 +58,11 @@ $(document).ready(function () {
         // 模擬使用者操作關閉模態框
         $('.btn-close').click();
     });
-});
 
-//選擇宅配或郵寄地址將使用者選擇的該地址填至表格裡
-//這個代碼假設選擇的 < input > 元素是位於表格行(<tr>)內部的第一個列(<td>)中。可以根據HTML結構調整find函數中的nth-child選擇器以匹配你的實際結構。
-//這樣就不需要設置每個<input>元素的ID，並且你可以根據所選的行來查找相關的資料，然後放到指定的<span>元素中。
-$(document).ready(function () {
     // 監聽確定按鈕的點擊事件
+    //選擇宅配或郵寄地址將使用者選擇的該地址填至表格裡
+    //這個代碼假設選擇的 < input > 元素是位於表格行(<tr>)內部的第一個列(<td>)中。可以根據HTML結構調整find函數中的nth-child選擇器以匹配你的實際結構。
+    //這樣就不需要設置每個<input>元素的ID，並且你可以根據所選的行來查找相關的資料，然後放到指定的<span>元素中。
     $('#selectedAddress').click(function () {
         // 獲取所選的地址的相關數據
         var selectedAddress = $('input.address-radio:checked');
@@ -40,15 +87,9 @@ $(document).ready(function () {
         // 模擬使用者操作關閉模態框
         $('.btn-close').click();
     });
-});
 
-
-
-
-
-//同意退換貨條款的選項為必勾選的項目，若沒有勾選擇無法送出訂單
-$(document).ready(function () {
-    // 監聽 checkbox 變更事件
+    //監聽checkbox變更事件
+    //同意退換貨條款的選項為必勾選的項目，若沒有勾選擇無法送出訂單
     $('#returnsInvoice').change(function () {
         // 檢查 checkbox 是否被勾選
         if ($(this).is(':checked')) {
@@ -59,7 +100,6 @@ $(document).ready(function () {
             $('#error-message').text('此為必勾選的項目');
         }
     });
-
     // 監聽送出訂單按鈕的點擊事件
     $('#submit-order-btn').click(function (e) {
         // 檢查 checkbox 是否被勾選
@@ -69,57 +109,107 @@ $(document).ready(function () {
             // 顯示錯誤訊息
             $('#error-message').text('此為必勾選的項目');
         }
+        else
+        {
+           /* e.preventDefault(); *//*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
+            console.log("阿囉哈你好嗎可以讓我過關嗎^_^??")
+            let formData = $("#ecpayform").serializeArray();
+            var json = {};
+            $.each(formData, function () {
+                json[this.name] = this.value || "";
+            });
+            console.log(json); /*F12 -> console*/
+            //step3 : 新增訂單到資料庫
+            $.ajax({
+                type: 'POST',
+                url: 'https://localhost:7218/Ecpay/AddOrders',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(json),
+                success: function (res) {
+                    console.log(res);
+                ///*成功後執行跳轉*/
+               /* window.location.href = 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5';*/
+                },
+                error: function (err) { console.log(err); },
+            });
+        }
+        //else {
+        //    let formData = $("#checkForm").serializeArray();
+        //    var json = {};
+        //    $.each(formData, function () {
+        //        json[this.name] = this.value || "";
+        //    });
+        //    // 發送 AJAX 請求到 AddOrder 方法
+        //    $.ajax({
+        //        type: 'POST',
+        //        url: '/Cart/AddOrder', // 使用適當的路由 URL
+        //        contentType: 'application/json; charset=utf-8',
+        //        data: JSON.stringify(json),
+        //        success: function (res) {
+        //            console.log(res);
+        //            // 根據需要處理成功回應，例如轉向到訂單確認頁面
+        //        },
+        //        error: function (err) {
+        //            console.log(err);
+        //            // 處理錯誤回應，例如顯示錯誤消息給用戶
+        //        },
+        //    });
+        //}
     });
+
 });
 
-//按下送出訂單的按鈕將訂單新增到資料庫
-//$("#submit-order-btn").on('click', (e) => {
-//    e.preventDefault(); // 防止表單的默認提交行為
+////按下送出訂單的按鈕將訂單新增到資料庫
+//$(document).ready(function () {
+//    $("#submit-order-btn").on('click', (e) => {
+//        e.preventDefault(); // 防止表單的默認提交行為
 
-//    let formData = $("#checkForm").serializeArray();
-//    var json = {};
-//    $.each(formData, function () {
-//        json[this.name] = this.value || "";
-//    });
+//        let formData = $("#checkForm").serializeArray();
+//        var json = {};
+//        $.each(formData, function () {
+//            json[this.name] = this.value || "";
+//        });
 
-//    // 發送 AJAX 請求到 AddOrder 方法
-//    $.ajax({
-//        type: 'POST',
-//        url: '/Cart/AddOrder', // 使用適當的路由 URL
-//        contentType: 'application/json; charset=utf-8',
-//        data: JSON.stringify(json),
-//        success: function (res) {
-//            console.log(res);
-//            // 根據需要處理成功回應，例如轉向到訂單確認頁面
-//        },
-//        error: function (err) {
-//            console.log(err);
-//            // 處理錯誤回應，例如顯示錯誤消息給用戶
-//        },
+//        // 發送 AJAX 請求到 AddOrder 方法
+//        $.ajax({
+//            type: 'POST',
+//            url: '/Cart/AddOrder', // 使用適當的路由 URL
+//            contentType: 'application/json; charset=utf-8',
+//            data: JSON.stringify(json),
+//            success: function (res) {
+//                console.log(res);
+//                // 根據需要處理成功回應，例如轉向到訂單確認頁面
+//            },
+//            error: function (err) {
+//                console.log(err);
+//                // 處理錯誤回應，例如顯示錯誤消息給用戶
+//            },
+//        });
 //    });
 //});
 
-$(document).ready(function () {
-    $("#submit-order-btn").on('click', (e) => {
-        e.preventDefault(); /*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
-        console.log("阿囉哈你好嗎可以讓我過關嗎^___^??")
-        let formData = $("#form").serializeArray();
-        var json = {};
-        $.each(formData, function () {
-            json[this.name] = this.value || "";
-        });
-         console.log(json); /*F12 -> console*/
-        //step3 : 新增訂單到資料庫
-        $.ajax({
-            type: 'POST',
-            url: 'https://localhost:7218/Ecpay/AddOrders',
-            contentType: 'application/json; charset=utf-8',
-            //data: JSON.stringify(json),
-            success: function (res) {
-                console.log(res);
-            },
-            error: function (err) { console.log(err); },
-        });
+//為了demo用做的導至綠界付款
+//$(document).ready(function () {
+//    $("#submit-order-btn").on('click', (e) => {
+//        e.preventDefault(); /*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
+//        console.log("阿囉哈你好嗎可以讓我過關嗎^_^??")
+//        let formData = $("#form").serializeArray();
+//        var json = {};
+//        $.each(formData, function () {
+//            json[this.name] = this.value || "";
+//        });
+//         console.log(json); /*F12 -> console*/
+//        //step3 : 新增訂單到資料庫
+//        $.ajax({
+//            type: 'POST',
+//            url: 'https://localhost:7218/Ecpay/AddOrders',
+//            contentType: 'application/json; charset=utf-8',
+//            data: JSON.stringify(json),
+//            success: function (res) {
+//                console.log(res);
+//            },
+//            error: function (err) { console.log(err); },
+//        });
 
-    });
-}
+//    });
+//}

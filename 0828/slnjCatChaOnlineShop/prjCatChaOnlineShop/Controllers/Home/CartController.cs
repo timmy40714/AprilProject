@@ -51,6 +51,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
+   
         public IActionResult Checkout()
         {
             //using (StreamReader reader = new StreamReader(Request.Body))
@@ -168,40 +169,39 @@ namespace prjCatChaOnlineShop.Controllers.Home
             return null;
         }
 
-        //[HttpPost]
-        //public IActionResult AddOrder([FromBody] AddOrderViewModel orderData)
-        //{
-        //    try
-        //    {
-        //        var memberId = GetCurrentMemberId();
+        [HttpPost]
+        public IActionResult AddOrder([FromBody] AddOrderViewModel orderData)
+        {
+            try
+            {
+                var memberId = GetCurrentMemberId();
 
-        //        if (memberId != null)
-        //        {
-        //            // 在這裡處理訂單創建邏輯
-        //            ShopOrderTotalTable order = new ShopOrderTotalTable();
-        //            order.MemberId = memberId;
-        //            order.OrderCreationDate = DateTime.Now;
-        //            order.OrderStatusId = 2;
+                if (memberId != null)
+                {
+                    // 在這裡處理訂單創建邏輯
+                    ShopOrderTotalTable order = new ShopOrderTotalTable();
+                    order.MemberId = memberId;
+                    order.OrderCreationDate = DateTime.Now;
+                    order.OrderStatusId = 2;
 
-        //            // 執行資料庫新增操作
-        //            // 假設您使用 Entity Framework Core，可以像下面這樣執行新增操作
-        //            using (var dbContext = new cachaContext()) // 替換成您的 DbContext
-        //            {
-        //                dbContext.ShopOrderTotalTable.Add(order);
-        //                dbContext.SaveChanges();
-        //            }
+                    // 執行資料庫新增操作
+                    using (var dbContext = new cachaContext()) // 替換成您的 DbContext
+                    {
+                        dbContext.ShopOrderTotalTable.Add(order);
+                        dbContext.SaveChanges();
+                    }
 
-        //            // 此處您可以返回成功或其他所需的回應
-        //            return Ok(new { message = "訂單已成功創建。" });
-        //        }
+                    // 此處您可以返回成功或其他所需的回應
+                    return Ok(new { message = "訂單已成功創建。" });
+                }
 
-        //        return BadRequest(new { message = "無法識別的會員 ID。" });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, new { message = "內部錯誤：" + ex.Message });
-        //    }
-        //}
+                return BadRequest(new { message = "無法識別的會員 ID。" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "內部錯誤：" + ex.Message });
+            }
+        }
 
     }
 }
