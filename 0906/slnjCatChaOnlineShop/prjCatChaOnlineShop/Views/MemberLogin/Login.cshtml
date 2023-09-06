@@ -1,0 +1,393 @@
+﻿@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="~/css/style.css">
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="~/css/responsive.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/custom.css">
+    <!--myCss-->
+    <link rel="stylesheet" href="~/css/myCss.css">
+ 
+    <style>
+        .logo-wrapper:hover {
+            transform: scale(1.1); /* 放大 10% */
+            transition: transform 0.3s ease-in-out; /* 添加平滑過渡效果 */
+        }
+
+        .alert-btn-login {
+            background-color: #DE9E4F !important;
+            color: white; 
+        }
+
+        .main-top .formain-topSpan {
+            color: #ffffff;
+            letter-spacing: 2px;
+        }
+    </style>
+
+</head>
+
+<body style="background:#F6EBDF">
+    <div class="main-top">
+        <div class="d-flex justify-content-center p-2">
+            <ul>
+                <li>
+                    <i class="fab fa-opencart" style="color:#ffff"><span class="formain-topSpan"></span></i>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-5 d-flex align-items-center justify-content-center">
+                <a asp-controller="Index" asp-action="Index" class="logo-wrapper">
+                    <img src="~/images/CatCha/loginlogo.png" style="width: 70%; height: auto;" />
+                </a>
+            </div>
+            <div class="col-6 mt-2">
+                <div class="text-center mt-3" style="font-size:40px">
+                    <a id="loginModalLabel">登入</a>
+                </div>
+                <div class="row justify-content-md-center">
+                    <div class="col-10">
+                        <div class="container-fluid">
+                            @*@using (Html.BeginForm("Login", "MemberLogin", FormMethod.Post, new { id = "loginForm" }))
+                            {*@
+
+                            <div class="row" id="loginForm">
+                                    <div>
+                                        <label for="txtEmail">電子信箱：</label>
+                                        <input type="email" class="form-control" id="txtEmail" name="txtEmail"
+                                               placeholder="email" value="seoari@gmail.com" required>
+                                        <div class="invalid-feedback"> 請輸入電子信箱</div>
+                                    </div>
+                                    <div>
+                                        <label for="txtPassword">密碼：</label>
+                                        <input type="password" class="form-control" id="txtPassword" name="txtPassword"
+                                               placeholder="password" value="a12345" required>
+                                        <div class="invalid-feedback"> 請輸入密碼 </div>
+                                    </div>
+                                </div>
+                                <div class="d-grid gap-2 mt-3">
+                                    <input class="btn btn-light" type="submit" id="loginButton" value="登入">
+                                </div>
+                           
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox"
+                                                @* role="switch" *@id="loginCheckDefault">
+                                                <label class="form-check-label"
+                                                       for="loginCheckDefault">記住我</label>
+                                            </div>
+                                        </div>
+                                        <div class=" d-flex justify-content-end">
+                                            <a asp-controller="memberlogin" asp-action="forgetpassword" class="forget_btn link-color link-primary ">忘記密碼?</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer row gy-4"></div>
+                                <div class="d-grid gap-2">
+                                    <a asp-controller="memberlogin" asp-action="registermember" class="btn btn-light" type="button">加入會員</a>
+                                </div>
+                                <button class="btn btn-danger" id="unverifiedLogin">DEMO未驗證</button>
+
+                                <div class="mt-2 text-center">
+                                    <a>或用其他社群登入</a>
+                                </div>
+                                <div class="mt-3 text-center justify-content-center d-flex" >
+                                    <div id="g_id_onload"
+                                         data-client_id="572000494003-padpmen83rqinfo8tjq6d5tu653d69m2.apps.googleusercontent.com"
+                                         data-login_uri="https://localhost:7218/MemberLogin/ValidGoogleLogin"
+                                         data-auto_prompt="false">
+                                    </div>
+                                    <div class="g_id_signin"
+                                         data-type="standard"
+                                         data-size="large"
+                                         data-theme="outline"
+                                         data-text="sign_in_with"
+                                         data-shape="rectangular"
+                                         data-logo_alignment="left">
+                                    </div>                                 
+                                </div>                                 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Start Footer  -->
+    <footer>
+        <div class="footer-main mt-3">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 col-sm-12">
+                        <div class="footer-top-box">
+                            <h3>營業時間</h3>
+                            <ul class="list-time">
+                                <li>一 - 五: 08.00am - 05.00pm</li>
+                                <li>星期六: 10.00am - 08.00pm</li>
+                                <li>星期日: 11.00am - 12.00pm</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12 col-sm-12">
+                        <div class="footer-top-box">
+                            <h3>訂閱我們獲得最新資訊</h3>
+                            <form class="newsletter-box">
+                                <div class="form-group">
+                                    <input class="" type="email" name="Email" placeholder="請輸入您的電子信箱" />
+                                    <i class="fa fa-envelope"></i>
+                                </div>
+                                <button class="btn hvr-hover" type="submit">立即訂閱</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12 col-sm-12">
+                        <div class="footer-top-box">
+                            <h3>追蹤我們</h3>
+                            <div class="mt-3">
+                                <ul>
+                                    <li><a href="#"><i class="fab fa-facebook" aria-hidden="true"></i></a></li>
+                                    <li><a href="#"><i class="fab fa-instagram" aria-hidden="true"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 col-sm-12">
+                        <div class="footer-widget">
+                            <h4>關於CatCha貓抓抓</h4>
+                            <p>致力於提供最完整的產品給貓咪。</p>
+                            <p>你的寶貝也是我們的寶貝。</p>
+                            <p>除了購物服務，也提供各種貓咪的知識。</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12 col-sm-12">
+                        <div class="footer-link">
+                            <h4>顧客服務</h4>
+                            <ul>
+                                <li><a href="#">防詐騙宣導</a></li>
+                                <li><a href="#">退換貨政策</a></li>
+                                <li><a href="#">服務條款</a></li>
+                                <li><a href="#">隱私權政策</a></li>
+                                <li><a href="#">運送政策</a></li>
+                                <li><a href="#">常見問題</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12 col-sm-12">
+                        <div class="footer-link-contact">
+                            <h4>聯絡我們</h4>
+                            <ul>
+                                <li>
+                                    <p><i class="fas fa-map-marker-alt"></i>地址: 106台北市大安區 <br>復興南路一段390號2樓</p>
+                                </li>
+                                <li>
+                                    <p><i class="fas fa-phone-square"></i>Phone: <a href="tel:02-6631-6588">02-6631-6588</a></p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <i class="fas fa-envelope"></i>Email: <a href="mailto:catCha@gmail.com">catCha@gmail.com</a>
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- End Footer  -->
+    <!-- Start copyright  -->
+    <div class="footer-copyright">
+        <p class="footer-company">
+            All Rights Reserved. &copy; 2023 <a href="#">catCha</a>
+        </p>
+    </div>
+    <!-- End copyright  -->
+
+    <a href="#" id="back-to-top" title="Back to top" style="display: none;">&uarr;</a>
+
+    <!-- ALL JS FILES -->
+    <!--引用Bundle，這樣nav導覽與頁籤就可以使用-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+            crossorigin="anonymous"></script>
+    <!--引用分離(Separate)-->
+    @*  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+    integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+    crossorigin="anonymous"></script> *@
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js"
+            integrity="sha384-lpyLfhYuitXl2zRZ5Bn2fqnhNAKOAaM/0Kr9laMspuaMiZfGmfwRNFh8HlMy49eQ"
+            crossorigin="anonymous"></script>
+    <!---->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <!-- ALL PLUGINS -->
+    <script src="~/js/jquery.superslides.min.js"></script>
+    <script src="~/js/bootstrap-select.js"></script>
+    <script src="~/js/inewsticker.js"></script>
+   @* <script src="~/js/bootsnav.js."></script>*@
+    <script src="~/js/images-loded.min.js"></script>
+    <script src="~/js/isotope.min.js"></script>
+    <script src="~/js/owl.carousel.min.js"></script>
+    <script src="~/js/baguetteBox.min.js"></script>
+    <script src="~/js/form-validator.min.js"></script>
+    <script src="~/js/contact-form-script.js"></script>
+    <script src="~/js/custom.js"></script>
+    <!--nav導覽與頁籤使用-->
+    @*<script src="~/js/myScript.js"></script>*@
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <!--SWEET ALERT-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script type="text/javascript">
+        //DEMO未信箱驗證會員
+        //DEMO按鈕
+        $('#unverifiedLogin').click(function () {
+            $('#txtEmail').val("cc@gmail.com");
+            $('#txtPassword').val("aa1234");
+        });
+
+        //const divElement = document.getElementById('g_id_onload');
+
+        //divElement.addEventListener('click', function () {
+        //    alert('Div被点击了！');
+        //});
+
+        //新版登入
+        
+            const loginButton = document.getElementById("loginButton"); // 登入按鈕
+            loginButton.addEventListener("click", function (e) {
+                e.preventDefault(); // 防止表單自動提交
+
+                 //發送 AJAX 請求到 API 以驗證登入
+                $.ajax({
+                    url: '/MemberLogin/Login',
+                    type: 'POST', 
+                    data: { txtEmail: $('#txtEmail').val(), txtPassword: $('#txtPassword').val() },
+                    success: function (data) {
+                    //寫入任務資料
+                        //定義api傳回來的資料
+                    var userName = data.userName;
+                    var success = data.success;
+                    var exist = data.accountExist;
+                    var mess = data.message;
+
+                    if (userName && success==true) {
+                        setTask();
+                        Swal.fire({
+                            icon: 'success',
+                            title: '歡迎回來',
+                            text: `歡迎回來~ ${userName}`,
+                            customClass: {
+                                confirmButton: 'alert-btn-login'
+                            },
+                            confirmButtonText: '確定'
+                        }).then(() => {
+                            window.location.href = '/';
+                        });
+                    }
+                    else if (userName && status == false) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '登入失敗',
+                            text: mess,
+                            customClass: {
+                                confirmButton: 'alert-btn-login'
+                            },
+                            confirmButtonText: '確定'
+                        });
+                    }
+                    else if (exist==false){
+                        Swal.fire({
+                            icon: 'error',
+                            title: '登入失敗',
+                            text: mess,
+                            customClass: {
+                                confirmButton: 'alert-btn-login'
+                            },
+                            confirmButtonText: '確定'
+                        });
+                    } 
+                    else 
+                        Swal.fire({
+                            icon: 'error',
+                            title: '登入失敗',
+                            text: mess,
+                            customClass: {
+                                confirmButton: 'alert-btn-login'
+                            },
+                            confirmButtonText: '確定'
+                        });
+        },
+                    error: function (err) {
+                        $('#ErrorMsg').html(err.responseText);
+                        $('#ErrorAlert').modal('toggle');
+                        return false; // 失敗時返回 false
+                    }
+                });
+
+            });
+     
+
+      
+           function setTask(){
+            $.ajax({
+                url: '/Task/Create',
+                type: 'GET',
+                data: { txtEmail: $('#txtEmail').val(), txtPassword: $('#txtPassword').val() },
+                success: function () {
+                    console.log("更新任務成功") 
+                },
+                error: function (err) {
+                    $('#ErrorMsg').html(err.responseText);
+                    $('#ErrorAlert').modal('toggle');
+                    return false; // 失敗時返回 false
+                }
+            }); 
+           }
+        var topAnnouncement = $('.formain-topSpan');
+        console.log(topAnnouncement);
+        $.ajax({
+            url: '@Url.Action("GetTopAnnouncement","ProductApi")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                if (data.success) {
+                    topAnnouncement.text(data.message);
+                }
+                else {
+                    topAnnouncement.text(data.messageWelcome);
+                }
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+
+
+    </script>
+</body>
+</html>
